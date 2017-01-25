@@ -1,1 +1,441 @@
+@import url(http://fonts.googleapis.com/css?family=Raleway:400,700,900);
+@import url(http://fonts.googleapis.com/css?family=Lato:400,900);
 @import "../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+
+//colors
+$white: #ffffff;
+$color_oxford_blue_approx: #384452;
+$color_dodger_blue_approx: #01b2fe;
+$color_charade_approx: #2b2e31;
+$color_cerulean_approx: #00b3fe;
+$color_log_cabin_approx: #222222;
+$color_cerulean_90_approx: rgba(0,179,254,.9);
+$color_black_haze_approx: #f7f7f7;
+$color_loblolly_approx: #bfc9d3;
+$color_nobel_approx: #b3b3b3;
+$color_tree_poppy_approx: #f39c12;
+$color_mine_shaft_approx: #2f2f2f;
+
+//fonts
+$font_0: Lato;
+$font_1: sans-serif;
+$font_2: Raleway;
+
+//@extend-elements
+//original selectors
+//.btn-theme:hover, .btn-theme:focus, .btn-theme:active, .btn-theme.active, .open .dropdown-toggle.btn-theme
+%extend_1 {
+	color: $white;
+	background-color: $color_cerulean_approx;
+	border-color: $color_cerulean_approx;
+}
+
+//original selectors
+//.dmbutton:hover, .dmbutton:active, .dmbutton:focus
+%extend_2 {
+	color: $white;
+	background-color: $color_log_cabin_approx;
+	border-color: $white;
+}
+
+
+* {
+	margin: 0;
+	padding: 0;
+}
+body {
+	background: $white;
+	margin: 0;
+	height: 100%;
+	color: $color_oxford_blue_approx;
+	font-family: $font_0, $font_1;
+	font-weight: 400;
+}
+h1 {
+	font-family: $font_2, $font_1;
+	font-weight: 700;
+}
+h2 {
+	font-family: $font_2, $font_1;
+	font-weight: 700;
+}
+h3 {
+	font-family: $font_2, $font_1;
+	font-weight: 700;
+}
+h4 {
+	font-family: $font_2, $font_1;
+	font-weight: 700;
+}
+h5 {
+	font-family: $font_2, $font_1;
+	font-weight: 700;
+	color: $white;
+	font-weight: 400;
+}
+h6 {
+	font-family: $font_2, $font_1;
+	font-weight: 700;
+}
+p {
+	padding: 0;
+	margin-bottom: 12px;
+	font-family: $font_0, $font_1;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 24px;
+	color: $color_oxford_blue_approx;
+	margin-top: 10px;
+}
+img {
+	height: auto;
+	max-width: 100%;
+}
+a {
+	padding: 0;
+	margin: 0;
+	text-decoration: none;
+	//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+	transition: background-color .4s linear, color .4s linear;
+	&:hover {
+		text-decoration: none;
+		color: $color_dodger_blue_approx;
+	}
+	&:focus {
+		text-decoration: none;
+		color: $color_dodger_blue_approx;
+	}
+}
+::-moz-selection {
+	color: $white;
+	//Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+	text-shadow: none;
+	background: $color_charade_approx;
+}
+::selection {
+	color: $white;
+	//Instead of the line below you could use @include text-shadow($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10)
+	text-shadow: none;
+	background: $color_charade_approx;
+}
+.centered {
+	text-align: center;
+}
+.navbar {
+	min-height: 70px;
+	padding-top: 10px;
+	margin-bottom: 0;
+}
+.navbar-brand {
+	font-family: $font_2, $font_1;
+	font-weight: 900;
+}
+.navbar-default {
+	background-color: $color_oxford_blue_approx;
+	border-color: transparent;
+	.navbar-nav {
+		> li > a {
+			color: $white;
+			font-weight: 700;
+			font-size: 12px;
+			&:hover {
+				color: $color_cerulean_approx;
+			}
+		}
+		> .active > a {
+			color: $color_cerulean_approx;
+			background-color: transparent;
+			&:hover {
+				color: $color_cerulean_approx;
+				background-color: transparent;
+			}
+			&:focus {
+				color: $color_cerulean_approx;
+				background-color: transparent;
+			}
+		}
+	}
+}
+.dropdown-menu {
+	background: $color_oxford_blue_approx;
+	> li > a {
+		color: $white;
+		font-weight: 700;
+		font-size: 12px;
+	}
+}
+.btn-theme {
+	color: $white;
+	background-color: $color_oxford_blue_approx;
+	border-color: $color_oxford_blue_approx;
+	margin: 4px;
+	&:hover {
+		@extend %extend_1;
+	}
+	&:focus {
+		@extend %extend_1;
+	}
+	&:active {
+		@extend %extend_1;
+	}
+	&.active {
+		@extend %extend_1;
+	}
+}
+.dmbutton {
+	background: rgba(0, 0, 0, 0);
+	border: 1px solid $white;
+	color: $white;
+	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+	border-radius: 2px;
+	padding-top: 1.025rem;
+	padding-right: 2.25rem;
+	letter-spacing: 0.85px;
+	padding-bottom: 1.0875rem;
+	padding-left: 2.25rem;
+	font-size: 1.55rem;
+	cursor: pointer;
+	font-weight: normal;
+	line-height: normal;
+	margin: 0 0 1.25rem;
+	text-decoration: none;
+	text-align: center;
+	display: inline-block;
+	//Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
+	transition: background-color 300ms ease-out;
+	font-weight: normal !important;
+	&:hover {
+		@extend %extend_2;
+	}
+	&:active {
+		@extend %extend_2;
+	}
+	&:focus {
+		@extend %extend_2;
+	}
+}
+.mtb {
+	margin-top: 80px;
+	margin-bottom: 80px;
+}
+.mb {
+	margin-bottom: 60px;
+}
+.mt {
+	margin-top: 60px;
+}
+.hline {
+	border-bottom: 2px solid $color_oxford_blue_approx;
+}
+.hline-w {
+	border-bottom: 2px solid $white;
+	margin-bottom: 25px;
+}
+#headerwrap {
+	background-color: $color_cerulean_approx;
+	min-height: 550px;
+	padding-top: 100px;
+	padding-bottom: 0;
+	text-align: center;
+	h3 {
+		color: $white;
+		font-weight: 400;
+	}
+	h1 {
+		color: $white;
+		margin-bottom: 25px;
+	}
+	.img-responsive {
+		margin: 0 auto;
+	}
+}
+#service {
+	margin-top: 100px;
+	margin-bottom: 80px;
+	i {
+		color: $color_cerulean_approx;
+		font-size: 60px;
+		padding: 15px;
+	}
+}
+#portfoliowrap {
+	padding-top: 60px;
+	margin-bottom: 60px;
+	display: block;
+	text-align: center;
+	h3 {
+		margin-bottom: 25px;
+	}
+}
+.portfolio {
+	padding: 0 !important;
+	margin: 0 !important;
+	display: block;
+}
+.portfolio-item {
+	p {
+		margin: 0 0 30px;
+	}
+	h3 {
+		margin: -10px 0 10px;
+		font-size: 16px;
+		text-transform: uppercase;
+	}
+	.title:before {
+		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+		border-radius: 0;
+		display: none;
+	}
+}
+.tpl6 {
+	h3 {
+		color: $white;
+		margin: 0;
+		padding: 40px 5px 0;
+		font-size: 16px;
+		text-transform: uppercase;
+	}
+	.dmbutton {
+		display: inline-block;
+		margin: 30px 5px 20px;
+		font-size: 13px;
+	}
+	.bg {
+		height: 100%;
+		width: 100%;
+		background-color: $color_cerulean_approx;
+		background-color: $color_cerulean_90_approx;
+		text-align: center;
+	}
+}
+#twrap {
+	margin-top: 0;
+	padding-top: 60px;
+	text-align: center;
+	background-attachment: relative;
+	background-position: center center;
+	min-height: 450px;
+	width: 100%;
+	background-size: 100%;
+	background-size: cover;
+	i {
+		font-size: 50px;
+		color: $white;
+		margin-bottom: 25px;
+	}
+	p {
+		color: $white;
+		font-size: 15px;
+		line-height: 30px;
+	}
+}
+#cwrap {
+	background: $color_black_haze_approx;
+	margin-top: 0;
+	padding-top: 80px;
+	padding-bottom: 100px;
+	h3 {
+		margin-bottom: 60px;
+	}
+}
+#footerwrap {
+	padding-top: 60px;
+	padding-bottom: 60px;
+	background: $color_oxford_blue_approx;
+	p {
+		color: $color_loblolly_approx;
+	}
+	h4 {
+		color: $white;
+	}
+	i {
+		font-size: 30px;
+		color: $color_loblolly_approx;
+		padding-right: 25px;
+		&:hover {
+			color: $color_cerulean_approx;
+		}
+	}
+}
+#blue {
+	background: $color_cerulean_approx;
+	margin-top: 60px;
+	margin-bottom: 60px;
+	padding-top: 25px;
+	padding-bottom: 25px;
+	h3 {
+		color: $white;
+		margin-left: 15px;
+	}
+}
+.ctitle {
+	color: $color_cerulean_approx;
+	font-weight: 700;
+	margin-bottom: 15px;
+}
+csmall {
+	font-size: 12px;
+	color: $color_nobel_approx;
+}
+csmall2 {
+	font-size: 12px;
+	color: $color_tree_poppy_approx;
+}
+.spacing {
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+.badge-theme {
+	background: $color_cerulean_approx;
+}
+#contactwrap {
+	margin-top: -60px;
+	padding-top: 0;
+	text-align: center;
+	background-attachment: relative;
+	background-position: center center;
+	min-height: 400px;
+	width: 100%;
+	background-size: 100%;
+	background-size: cover;
+}
+.popular-posts {
+	margin: 0;
+	padding-left: 0;
+	li {
+		list-style: none;
+		margin-bottom: 20px;
+		min-height: 70px;
+		a {
+			color: $color_mine_shaft_approx;
+			text-decoration: none;
+			&:hover {
+				color: $color_mine_shaft_approx;
+				text-decoration: none;
+			}
+		}
+		img {
+			float: left;
+			margin-right: 20px;
+		}
+		em {
+			font-family: $font_0, $font_1;
+			font-size: 12px;
+			color: $color_nobel_approx;
+		}
+	}
+	p {
+		line-height: normal;
+		margin-bottom: auto;
+	}
+}
+.navbar-header .navbar-brand {
+	color: $white;
+}
+.open .dropdown-toggle.btn-theme {
+	@extend %extend_1;
+}
+.share i {
+	padding-right: 15px;
+	font-size: 18px;
+}
