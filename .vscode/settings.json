@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "flask/bin/python3.5",
+    "python.linting.lintOnSave": false,
+    "python.linting.pylintArgs": ["--load-plugins", "pylint_flask"]
+}
