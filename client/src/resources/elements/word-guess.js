@@ -22,6 +22,7 @@ export class WordGuess {
   }
 
   sendStartCommand() {
+    this.responses = [];
     console.log('send start command: ' + this.sequence);
     this.socket.emit('start', { command: this.sequence });
   }

@@ -241,6 +241,7 @@ define('resources/elements/word-guess',['exports', 'socket.io-client'], function
     };
 
     WordGuess.prototype.sendStartCommand = function sendStartCommand() {
+      this.responses = [];
       console.log('send start command: ' + this.sequence);
       this.socket.emit('start', { command: this.sequence });
     };
