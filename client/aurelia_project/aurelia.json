@@ -141,6 +141,11 @@
             "resources": [
               "**/*.html"
             ]
+          },
+          {
+            "name": "socket.io-client",
+            "path": "../node_modules/socket.io-client",
+            "main": "socket.io"
           }
         ]
       }
