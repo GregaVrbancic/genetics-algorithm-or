@@ -20,20 +20,20 @@ def test_connect():
 
 @socketio.on('start', namespace='/word-guess')
 def test_message(command):
-    print('Command start on namespace word-guess received: ' + str(command))
+    print('Command start on namespace word-guess received: ' + command['command'])
     thread = Thread()
     thread_stop_event = Event()
     
     if not thread.isAlive():
         print('Starting GuessWordThread...')
-        thread = GuessWordThread()
+        thread = GuessWordThread(command['command'])
         thread.start()
 
 class GuessWordThread(Thread):
-    def __init__(self):
+    def __init__(self, target):
         self.delay = 1
         self.geneset = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.,"
-        self.target = "For I am fearfully and wonderfully made."
+        self.target = target
         super(GuessWordThread, self).__init__()
 
     def guessWord(self):
@@ -44,7 +44,7 @@ class GuessWordThread(Thread):
 
         def fnDisplay(candidate):
             timeDiff = datetime.datetime.now() - startTime
-            socketio.emit('server response', {'genes': candidate.Genes, 'fitness': candidate.Fitness, 'time': str(timeDiff)}, namespace='/word-guess')
+            socketio.emit('server response', {'genes': candidate.Genes, 'fitness': candidate.Fitness, 'time': str(timeDiff)}, namespace='/word-guess', broadcast=False)
 
         optimalFitness = len(self.target)
         best = genetic.get_best(fnGetFitness, len(self.target), optimalFitness, self.geneset, fnDisplay)

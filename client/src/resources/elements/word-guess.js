@@ -7,6 +7,7 @@ export class WordGuess {
     this.description = 'In this example the genetic algorithm is used for guessing the sequence of letters.';
     this.info = 'The longer is sequence of letters, more difficult is for genetic algorithm to "guess" it and also more time consuming it is.';
     this.responses = [];
+    this.sequence = '';
     this.socket = io.connect('http://localhost:5000/word-guess');
   }
 
@@ -21,7 +22,7 @@ export class WordGuess {
   }
 
   sendStartCommand() {
-    console.log('send start command');
-    this.socket.emit('start', {command: 'bla bla bla'});
+    console.log('send start command: ' + this.sequence);
+    this.socket.emit('start', { command: this.sequence });
   }
 }
