@@ -8,3 +8,4 @@ async_mode = 'eventlet'
 socketio = SocketIO(app, async_mode=async_mode)
 
 from app import views
+from app import genetic

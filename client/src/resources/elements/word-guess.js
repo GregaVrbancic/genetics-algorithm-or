@@ -3,14 +3,15 @@ import io from 'socket.io-client';
 
 export class WordGuess {
   constructor() {
-    this.value = 'This is word guess GA component';
-    this.socket = io.connect('http://localhost:5000/io');
+    this.title = 'Basic Genetic Algorithm Example';
+    this.description = 'In this example the genetic algorithm is used for guessing the sequence of letters.';
+    this.info = 'The longer is sequence of letters, more difficult is for genetic algorithm to "guess" it and also more time consuming it is.';
+    this.responses = [];
+    this.socket = io.connect('http://localhost:5000/word-guess');
   }
 
   activate() {
-    this.socket.on('server response', function(response) {
-      console.log('response: ' + response);
-    });
+    this.socket.on('server response', response => this.responses.push(response));
   }
 
   deactivate() {
@@ -19,8 +20,8 @@ export class WordGuess {
     });
   }
 
-  sendEmit() {
-    console.log('sendEmit!');
-    this.socket.emit('my event', {data: 'something for you!'});
+  sendStartCommand() {
+    console.log('send start command');
+    this.socket.emit('start', {command: 'bla bla bla'});
   }
 }

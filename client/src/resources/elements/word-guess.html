@@ -1,4 +1,35 @@
 <template>
-  <h1>${value}</h1>
-  <button class="btn btn-success" click.delegate="sendEmit()">Emit to server!</button>
+  <div id="blue">
+    <div class="container">
+      <div class="row">
+        <h3>${title}</h3>
+      </div>
+	  </div>
+	</div>
+  <div class="container mt">
+	 	<div class="row">
+       <div class="col-lg-4">
+			 	<div class="spacing"></div>
+		 		<h4>Basic Example Details</h4>
+		 		<div class="hline"></div>
+        <p>${description}</p>
+        <p>${info}</p>
+		 	</div>
+		 	<div class="col-lg-7 col-lg-offset-1">
+			 	<div class="spacing"></div>
+        <form class="form-inline">
+          <div class="form-group width-89">
+            <input type="text" class="form-control input-lg width-95" placeholder="Enter sequence of letters...">
+          </div>
+          <button class="btn btn-success btn-lg" click.delegate="sendStartCommand()">Run</button>
+        </form>
+        <div class="output">
+          <p repeat.for="response of responses">
+            Genes: ${response.genes}  Fitness: ${response.fitness}  Time: ${response.time}
+          </p>
+        </div>
+		 	</div>
+	 	</div>
+	 </div>
+  
 </template>
