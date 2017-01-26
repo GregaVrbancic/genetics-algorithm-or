@@ -103,12 +103,23 @@ define('resources/elements/foot',["exports"], function (exports) {
     _classCallCheck(this, Foot);
   };
 });
-define('resources/elements/nav',["exports"], function (exports) {
-  "use strict";
+define('resources/elements/nav',['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
+  'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
+  exports.Nav = undefined;
+
+  function _initDefineProp(target, property, descriptor, context) {
+    if (!descriptor) return;
+    Object.defineProperty(target, property, {
+      enumerable: descriptor.enumerable,
+      configurable: descriptor.configurable,
+      writable: descriptor.writable,
+      value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+    });
+  }
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -116,9 +127,51 @@ define('resources/elements/nav',["exports"], function (exports) {
     }
   }
 
-  var Nav = exports.Nav = function Nav() {
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+    var desc = {};
+    Object['ke' + 'ys'](descriptor).forEach(function (key) {
+      desc[key] = descriptor[key];
+    });
+    desc.enumerable = !!desc.enumerable;
+    desc.configurable = !!desc.configurable;
+
+    if ('value' in desc || desc.initializer) {
+      desc.writable = true;
+    }
+
+    desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+      return decorator(target, property, desc) || desc;
+    }, desc);
+
+    if (context && desc.initializer !== void 0) {
+      desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+      desc.initializer = undefined;
+    }
+
+    if (desc.initializer === void 0) {
+      Object['define' + 'Property'](target, property, desc);
+      desc = null;
+    }
+
+    return desc;
+  }
+
+  function _initializerWarningHelper(descriptor, context) {
+    throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
+  }
+
+  var _desc, _value, _class, _descriptor;
+
+  var Nav = exports.Nav = (_class = function Nav() {
     _classCallCheck(this, Nav);
-  };
+
+    _initDefineProp(this, 'router', _descriptor, this);
+  }, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'router', [_aureliaFramework.bindable], {
+    enumerable: true,
+    initializer: function initializer() {
+      return null;
+    }
+  })), _class);
 });
 define('resources/elements/travelling-salesman',['exports'], function (exports) {
   'use strict';
@@ -189,7 +242,7 @@ define('resources/elements/word-guess',['exports', 'socket.io-client'], function
     return WordGuess;
   }();
 });
-define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><nav></nav><div class=\"container\"><div class=\"row\"><div class=\"col-lg-8 col-lg-offset-2\" style=\"margin-top:70px\"><router-view></router-view></div></div></div><foot></foot></template>"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template><require from=\"./app.css\"></require><nav router.bind=\"router\"></nav><div class=\"container\"><div class=\"row\"><div class=\"col-lg-8 col-lg-offset-2\" style=\"margin-top:70px\"><router-view></router-view></div></div></div><foot></foot></template>"; });
 define('text!resources/elements/foot.html', ['module'], function(module) { module.exports = "<template><div id=\"footerwrap\"><div class=\"container\"><div class=\"row\"><div class=\"col-lg-4\"><h4>About</h4><div class=\"hline-w\"></div><p>On this page are demonstrated some usages of Genetics Algorithms.</p><p>Grega Vrbančič &#169; 2017</p></div><div class=\"col-lg-4\"><h4>Social Links</h4><div class=\"hline-w\"></div><p><a href=\"#\"><i class=\"fa fa-dribbble\"></i></a> <a href=\"#\"><i class=\"fa fa-facebook\"></i></a> <a href=\"#\"><i class=\"fa fa-twitter\"></i></a> <a href=\"#\"><i class=\"fa fa-instagram\"></i></a> <a href=\"#\"><i class=\"fa fa-tumblr\"></i></a></p></div><div class=\"col-lg-4\"><h4>My Bunker</h4><div class=\"hline-w\"></div><p>Some Ave, 987,<br>23890, New York,<br>United States.<br></p></div></div></div></div></template>"; });
 define('text!resources/elements/nav.html', ['module'], function(module) { module.exports = "<template><div class=\"navbar navbar-default navbar-fixed-top\" role=\"navigation\"><div class=\"container\"><div class=\"navbar-header\"><button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\".navbar-collapse\"><span class=\"sr-only\">Toggle navigation</span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span> <span class=\"icon-bar\"></span></button> <a class=\"navbar-brand\" href=\"\">GA PROJECT</a></div><div class=\"navbar-collapse collapse navbar-right\"><ul class=\"nav navbar-nav\"><li class=\"${router.currentInstruction.config.name == 'WordGuess' ? 'active' : ''}\"><a route-href=\"route:WordGuess\">BASIC</a></li><li class=\"${router.currentInstruction.config.name == 'TravellingSalesman' ? 'active' : ''}\"><a route-href=\"route:TravellingSalesman\">ADVANCE</a></li></ul></div></div></div></template>"; });
 define('text!resources/elements/travelling-salesman.html', ['module'], function(module) { module.exports = "<template><h1>${value}</h1></template>"; });
