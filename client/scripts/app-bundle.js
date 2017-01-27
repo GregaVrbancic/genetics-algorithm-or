@@ -217,12 +217,12 @@ define('resources/elements/travelling-salesman',['exports', 'aurelia-fetch-clien
           _this.geolocation = location;
           _this.showSpinner = false;
         }, function (error) {
-          setDefaultLocation();
+          _this.setDefaultLocation();
           window.google.maps.event.trigger(_this.map, 'resize');
           _this.showSpinner = false;
         });
       } else {
-        setDefaultLocation();
+        this.setDefaultLocation();
         this.showSpinner = false;
       }
     };

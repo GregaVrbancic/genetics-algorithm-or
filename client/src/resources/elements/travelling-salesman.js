@@ -21,12 +21,12 @@ export class TravellingSalesman {
         this.geolocation = location;
         this.showSpinner = false;
       }, (error) => {
-        setDefaultLocation();
+        this.setDefaultLocation();
         window.google.maps.event.trigger(this.map, 'resize');
         this.showSpinner = false;
       });
     } else {
-      setDefaultLocation();
+      this.setDefaultLocation();
       this.showSpinner = false;
     }
   }
