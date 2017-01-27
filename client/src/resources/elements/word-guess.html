@@ -26,9 +26,22 @@
         <p class="bg-warning informations" show.bind="sequence.length == 0">${instruction}</p>
         <!--<span>Room: ${room}</span>-->
         <div class="output">
-          <p repeat.for="response of responses">
-            Genes: ${response.genes}  Fitness: ${response.fitness}  Time: ${response.time}
-          </p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Genes</th>
+                <th>Fitness</th>
+                <th>Time</th>
+              </tr>
+            </thead> 
+            <tbody>
+              <tr repeat.for="response of responses">
+                <td>${response.genes}</td>
+                <td>${response.fitness}</td>
+                <td>${response.time}</td>
+              </tr>
+            </tbody>
+          </table>  
         </div>
 		 	</div>
 	 	</div>

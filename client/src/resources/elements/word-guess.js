@@ -18,7 +18,7 @@ export class WordGuess {
       this.room === '' ? this.room = response.room : this.room = this.room;
       this.socket.off('connected response');
     });
-    this.socket.on('server response', response => this.responses.push(response));
+    this.socket.on('server response', response => this.responses.unshift(response));
   }
 
   detached() {
