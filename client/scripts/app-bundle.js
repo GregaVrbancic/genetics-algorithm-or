@@ -178,18 +178,21 @@ define('resources/elements/nav',['exports', 'aurelia-framework'], function (expo
     }
   })), _class);
 });
-define('resources/elements/travelling-salesman',['exports'], function (exports) {
+define('resources/elements/travelling-salesman',['exports', 'aurelia-fetch-client'], function (exports, _aureliaFetchClient) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
+  exports.TravellingSalesman = undefined;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
     }
   }
+
+  var httpClient = new _aureliaFetchClient.HttpClient();
 
   var TravellingSalesman = exports.TravellingSalesman = function () {
     function TravellingSalesman() {
@@ -203,6 +206,7 @@ define('resources/elements/travelling-salesman',['exports'], function (exports) 
       this.geolocation = null;
       this.markers = [];
       this.idCounter = 0;
+      this.osmUrl = 'http://router.project-osrm.org/table/v1/driving/';
     }
 
     TravellingSalesman.prototype.activate = function activate() {
@@ -254,6 +258,22 @@ define('resources/elements/travelling-salesman',['exports'], function (exports) 
       this.markers.splice(this.markers.findIndex(function (el) {
         return el.id === marker.id;
       }), 1);
+    };
+
+    TravellingSalesman.prototype.sendStartCommand = function sendStartCommand() {
+      console.log('obtaing distance table');
+      var query = '';
+      for (var i = 0; i < this.markers.length; i++) {
+        query += this.markers[i].latitude + ',' + this.markers[i].longitude;
+        if (i !== this.markers.length - 1) {
+          query += ';';
+        }
+      }
+      httpClient.fetch(this.osmUrl + query).then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        console.log(data);
+      });
     };
 
     return TravellingSalesman;

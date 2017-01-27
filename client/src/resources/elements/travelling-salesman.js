@@ -1,3 +1,7 @@
+import { HttpClient } from 'aurelia-fetch-client';
+
+let httpClient = new HttpClient();
+
 export class TravellingSalesman {
   constructor() {
     this.title = 'Advanced Genetic Algorithm Example - Travelling Salesman';
@@ -8,6 +12,7 @@ export class TravellingSalesman {
     this.geolocation = null;
     this.markers = [];
     this.idCounter = 0;
+    this.osmUrl = 'http://router.project-osrm.org/table/v1/driving/';
   }
 
   activate() {
@@ -68,4 +73,20 @@ export class TravellingSalesman {
       return el.id === marker.id;
     }), 1);
   }
+
+  sendStartCommand() {
+    console.log('obtaing distance table');
+    let query = '';
+    for(var i = 0; i < this.markers.length; i++) {
+      query += this.markers[i].latitude + ',' + this.markers[i].longitude;
+      if (i !== this.markers.length - 1) {
+        query += ';';
+      }
+    }
+    httpClient.fetch(this.osmUrl + query)
+      .then(response => response.json())
+      .then(data => {
+         console.log(data);
+      });
+  } 
 }
