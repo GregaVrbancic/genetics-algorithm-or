@@ -234,7 +234,7 @@ aurelia-animator-css@^1.0.0:
     aurelia-pal "^1.0.0"
     aurelia-templating "^1.0.0"
 
-aurelia-binding@^1.0.0, aurelia-binding@^1.0.9, aurelia-binding@^1.1.0:
+aurelia-binding@^1.0.0, aurelia-binding@^1.0.9, aurelia-binding@^1.1.0, aurelia-binding@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/aurelia-binding/-/aurelia-binding-1.1.1.tgz#e5f3334d6724aa684c3e57db005cf410840e2765"
   dependencies:
@@ -278,20 +278,20 @@ aurelia-cli@^0.24.0:
     aurelia-polyfills "^1.0.0"
     npm "^3.10.8"
 
-aurelia-dependency-injection@^1.0.0:
+aurelia-dependency-injection@^1.0.0, aurelia-dependency-injection@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/aurelia-dependency-injection/-/aurelia-dependency-injection-1.3.0.tgz#4759aee48ebfc8ed5d6c15010b5e3444cb250d7a"
   dependencies:
     aurelia-metadata "^1.0.0"
     aurelia-pal "^1.0.0"
 
-aurelia-event-aggregator@^1.0.0:
+aurelia-event-aggregator@^1.0.0, aurelia-event-aggregator@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/aurelia-event-aggregator/-/aurelia-event-aggregator-1.0.1.tgz#9d7c7c1e1efe1ef3a78785e76abe80601e2d34c8"
   dependencies:
     aurelia-logging "^1.0.0"
 
-aurelia-framework@^1.0.0:
+aurelia-framework@^1.0.0, aurelia-framework@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/aurelia-framework/-/aurelia-framework-1.0.8.tgz#925ea6ba864d9ab4ee87d29d418d297288fbd7e3"
   dependencies:
@@ -304,6 +304,23 @@ aurelia-framework@^1.0.0:
     aurelia-path "^1.0.0"
     aurelia-task-queue "^1.0.0"
     aurelia-templating "^1.0.0"
+
+aurelia-google-maps@1.0.17:
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/aurelia-google-maps/-/aurelia-google-maps-1.0.17.tgz#f1abb5387d0fa0da6791f9a683f4bcbb2ae1f663"
+  dependencies:
+    aurelia-binding "^1.1.1"
+    aurelia-dependency-injection "^1.2.1"
+    aurelia-event-aggregator "^1.0.1"
+    aurelia-framework "^1.0.8"
+    aurelia-loader "^1.0.0"
+    aurelia-logging "^1.2.0"
+    aurelia-metadata "^1.0.3"
+    aurelia-pal "^1.2.0"
+    aurelia-path "^1.1.1"
+    aurelia-task-queue "^1.1.0"
+    aurelia-templating "^1.2.0"
+    aurelia-templating-binding "^1.2.0"
 
 aurelia-history-browser@^1.0.0:
   version "1.0.0"
@@ -337,11 +354,11 @@ aurelia-logging-console@^1.0.0:
   dependencies:
     aurelia-logging "^1.0.0"
 
-aurelia-logging@^1.0.0:
+aurelia-logging@^1.0.0, aurelia-logging@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/aurelia-logging/-/aurelia-logging-1.2.0.tgz#22007dddc56fb5bbbfa3a865bd1bfc4020290ddb"
 
-aurelia-metadata@^1.0.0:
+aurelia-metadata@^1.0.0, aurelia-metadata@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/aurelia-metadata/-/aurelia-metadata-1.0.3.tgz#1e8d59da188e2871a8ad749ba42ca85084a3f30e"
   dependencies:
@@ -353,11 +370,11 @@ aurelia-pal-browser@^1.0.0:
   dependencies:
     aurelia-pal "^1.1.0"
 
-aurelia-pal@^1.0.0, aurelia-pal@^1.1.0:
+aurelia-pal@^1.0.0, aurelia-pal@^1.1.0, aurelia-pal@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/aurelia-pal/-/aurelia-pal-1.2.0.tgz#ebf0138b3ff2961a2afdd33d5a9841961940247c"
 
-aurelia-path@^1.0.0:
+aurelia-path@^1.0.0, aurelia-path@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/aurelia-path/-/aurelia-path-1.1.1.tgz#caa9d20bc8515a5f9f286d9a3b18d81b2c85b0dd"
 
@@ -390,7 +407,7 @@ aurelia-task-queue@^1.0.0, aurelia-task-queue@^1.1.0:
   dependencies:
     aurelia-pal "^1.0.0"
 
-aurelia-templating-binding@^1.0.0:
+aurelia-templating-binding@^1.0.0, aurelia-templating-binding@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/aurelia-templating-binding/-/aurelia-templating-binding-1.2.0.tgz#d161fb4d8b191219e218841f2969232c07f6b402"
   dependencies:
@@ -4969,6 +4986,10 @@ spdx-expression-parse@~1.0.0:
 spdx-license-ids@^1.0.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-1.2.2.tgz#c9df7a3424594ade6bd11900d596696dc06bac57"
+
+spinkit@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/spinkit/-/spinkit-1.2.5.tgz#90f9f466a20e8e39ef24da959c1e611c2a30dd54"
 
 sprintf-js@~1.0.2:
   version "1.0.3"

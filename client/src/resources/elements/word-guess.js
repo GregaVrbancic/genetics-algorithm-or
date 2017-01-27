@@ -1,11 +1,11 @@
 import io from 'socket.io-client';
-//var socket = io('http://localhost:5000');
 
 export class WordGuess {
   constructor() {
     this.title = 'Basic Genetic Algorithm Example';
     this.description = 'In this example the genetic algorithm is used for guessing the sequence of letters.';
-    this.info = 'The longer is sequence of letters, more difficult is for genetic algorithm to "guess" it and also more time consuming it is.';
+    this.info = 'The longer is sequence of letters, more difficult it is for genetic algorithm to "guess" it and also more time consuming it is.';
+    this.instruction = 'Type in few words and click run!';
     this.responses = [];
     this.sequence = '';
     this.room = '';

@@ -1,6 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Raleway:400,700,900);
 @import url(http://fonts.googleapis.com/css?family=Lato:400,900);
 @import "../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+@import "../node_modules/spinkit/scss/spinkit.scss";
 
 //colors
 $white: #ffffff;
@@ -66,6 +67,12 @@ h3 {
 h4 {
 	font-family: $font_2, $font_1;
 	font-weight: 700;
+}
+h4.marker {
+  color: #333;
+  font-family: Roboto,Arial;
+  font-size: 14px;
+  font-weight: 500;
 }
 h5 {
 	font-family: $font_2, $font_1;
@@ -446,25 +453,45 @@ csmall2 {
   width: 95% !important;
 }
 .output {
-    margin: 2.9em 0em;
-    height: 22em;
-    padding: 1em;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px 4px 0 0;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    overflow: auto;
+  margin: 2.9em 0em;
+  height: 22em;
+  padding: 1em;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px 4px 0 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  overflow: auto;
 
-    &:before {
-      position: relative;
-      left: 15px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #959595;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      content: "Real-time output:";
-      margin-top: -4.5em;
-    }
+  &:before {
+    position: relative;
+    left: 15px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #959595;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    content: "Real-time output:";
+    margin-top: -4.5em;
+  }
+}
+.dummy-map {
+  height: 350px;
+  padding-top: 105px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px 4px 0 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.sk-cube-grid .sk-cube {
+  background-color: $color_cerulean_90_approx;
+}
+.locations {
+  margin: 2.9em 0;
+}
+.informations {
+  padding: 15px;
+  border-radius: 4px;
+  border: solid 1px #ddd;
 }

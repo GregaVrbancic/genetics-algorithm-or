@@ -23,7 +23,8 @@
           </div>
           <button class="btn btn-success btn-lg" click.delegate="sendStartCommand()">Run</button>
         </form>
-        <span>Room: ${room}</span>
+        <p class="bg-warning informations" show.bind="sequence.length == 0">${instruction}</p>
+        <!--<span>Room: ${room}</span>-->
         <div class="output">
           <p repeat.for="response of responses">
             Genes: ${response.genes}  Fitness: ${response.fitness}  Time: ${response.time}
@@ -32,5 +33,4 @@
 		 	</div>
 	 	</div>
 	 </div>
-  
 </template>

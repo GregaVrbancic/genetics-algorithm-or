@@ -1,3 +1,74 @@
 <template>
-  <h1>${value}</h1>
+  <div id="blue">
+    <div class="container">
+      <div class="row">
+        <h3>${title}</h3>
+      </div>
+	  </div>
+	</div>
+  <div class="container mt">
+	 	<div class="row">
+       <div class="col-lg-4">
+			 	<div class="spacing"></div>
+		 		<h4>Advanced Example Details</h4>
+		 		<div class="hline"></div>
+        <p>${description}</p>
+        <p>${info}</p>
+		 	</div>
+		 	<div class="col-lg-7 col-lg-offset-1">
+			 	<div class="spacing"></div>
+        <div class="dummy-map" show.bind="!geolocation">
+          <div class="sk-cube-grid">
+            <div class="sk-cube sk-cube1"></div>
+            <div class="sk-cube sk-cube2"></div>
+            <div class="sk-cube sk-cube3"></div>
+            <div class="sk-cube sk-cube4"></div>
+            <div class="sk-cube sk-cube5"></div>
+            <div class="sk-cube sk-cube6"></div>
+            <div class="sk-cube sk-cube7"></div>
+            <div class="sk-cube sk-cube8"></div>
+            <div class="sk-cube sk-cube9"></div>
+          </div>
+        </div>
+        <google-map latitude=${geolocation.coords.latitude}
+                    longitude=${geolocation.coords.longitude}
+                    map-click.delegate="mapClickHandler($event)"
+                    markers.bind="markers"
+                    if.bind="geolocation" zoom=12></google-map>
+        <p class="bg-warning informations" show.bind="geolocation && markers.length < 3">${instruction}</p>
+        <div class="locations" show.bind="markers.length > 0">
+          <h4>Selected locations:</h4>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr repeat.for="marker of markers">
+                <td>${marker.id}</td>
+                <td>${marker.title}</td>
+                <td>${marker.latitude}</td>
+                <td>${marker.longitude}</td>
+                <td><button class="btn btn-danger" click.trigger="deleteMarker(marker)"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <button class="btn btn-success btn-lg ${markers.length > 2 ? '' : 'disabled'}"
+                  click.delegate="sendStartCommand()" show.bind="markers.length > 0">Run</button>
+        </div>
+        <div class="output">
+          <p repeat.for="response of responses">
+            Genes: ${response.genes}  Fitness: ${response.fitness}  Time: ${response.time}
+          </p>
+        </div>
+		 	</div>
+	 	</div>
+	 </div>
 </template>

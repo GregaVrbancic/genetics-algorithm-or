@@ -26993,340 +26993,6 @@ define('aurelia-testing/component-tester',['exports', 'aurelia-templating', 'aur
     return ComponentTester;
   }();
 });
-define('aurelia-debugger/index',['exports', './dom-tracker', './create-window'], function (exports, _domTracker, _createWindow) {
-  'use strict';
-
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  exports.configure = configure;
-
-  function configure(aurelia) {
-    aurelia.container.get(_domTracker.DomTracker);
-
-    aurelia.container.get(_createWindow.CreateWindow);
-
-    aurelia.globalResources('./debug-window');
-  }
-});;define('aurelia-debugger', ['aurelia-debugger/index'], function (main) { return main; });
-
-define('aurelia-debugger/create-window',['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	var CreateWindow = (function () {
-		function CreateWindow(vc, vr, container) {
-			_classCallCheck(this, _CreateWindow);
-
-			document.addEventListener('aurelia-composed', function (e) {
-				console.log("aurelia-started");
-
-				var host = document.createElement("div");
-				var windowHost = document.createElement("debug-window");
-				host.appendChild(windowHost);
-
-				var view = vc.compile(host).create(container, undefined);
-				var slot = new _aureliaFramework.ViewSlot(document.body, true);
-
-				slot.add(view);
-				slot.attached();
-			}, false);
-		}
-
-		var _CreateWindow = CreateWindow;
-		CreateWindow = (0, _aureliaFramework.inject)(_aureliaFramework.ViewCompiler, _aureliaFramework.ViewResources, _aureliaFramework.Container)(CreateWindow) || CreateWindow;
-		return CreateWindow;
-	})();
-
-	exports.CreateWindow = CreateWindow;
-});
-define('text!aurelia-debugger/debug-window.css', ['module'], function(module) { module.exports = ".debug-popup {\n\tborder: 1px solid gainsboro;\n\tmin-width: 400px;\n\tbackground: white;\n\tz-index: 1000;\n\tposition: absolute;\n\tbox-shadow: 2px 2px 5px #bbbbbb;\n\tpadding: 8px;\n\tborder-radius: 5px;\n}\n\n.debug-popup .prop {\n\tfont-weight: bold;\n}\n\n.debug-element-highlight * {\n\tbackground-color: mistyrose !important;\n}\n\n\n.debug-popup h1 {\n    border-bottom: 1px solid gainsboro;\n    margin: 0px;\n    padding-bottom: 4px;\n    font-size: 12pt;\n    font-weight: bold;\n}\n\n.debug-popup .view-hints {\n\tposition: relative;\n    display: block;\n    padding: 0px;\n    background-color: #fff;\n    margin-bottom: 10px;\n}\n\n.debug-popup .view-hints li {\n    border: 1px solid #ddd;\n    border-bottom: none;\n    padding: 4px;\n    margin: 0;\n    border-collapse: collapse;\n}\n\n.debug-popup .view-hints li:first-child {\n\tbackground-color: #888;\n\tcolor: white;\n\tborder-top-left-radius: 5px;\n\tborder-top-right-radius: 5px;\n}\n\n.debug-popup .view-hints li:last-child {\n\tborder-bottom: 1px solid #ddd;\n\tborder-bottom-left-radius: 5px;\n\tborder-bottom-right-radius: 5px;\n}\n\n.debug-popup .view-hints li {\t\n    display: block;\n    list-style-type: disc;\n}"; });
-define('text!aurelia-debugger/debug-window.html', ['module'], function(module) { module.exports = "<template>\n\t<require from=\"./debug-window.css\"></require>\n\t<div class=\"debug-popup\" show.bind=\"visible\">\n\t\t<h1>Context Inspector - CTRL + / to toggle</h1>\n\t\t<div>\n\t\t\t<p>Press CTRL + . (full stop) to dump to console</p>\n\t\t\t<ul repeat.for=\"view of tracker.tracked\" class=\"view-hints\">\n\t\t\t\t<li>\n\t\t\t\t\t<span>\n\t\t\t\t\t\t<strong>Item ${ $index + 1 }, View:</strong> &lt;${ $parent.getElementName(view) }&gt;\n\t\t\t\t\t</span>\n\t\t\t\t\t<span>\n\t\t\t\t\t\t<strong>ViewModel:</strong> ${ $parent.getConstructorName(view) }\n\t\t\t\t\t</span>\t\t\n\t\t\t\t</li>\n\t\t\t\t<li if.bind=\"view.behaviors.length > 0\">\n\t\t\t\t\t<strong>Attached behaviours:</strong> <span repeat.for=\"b of view.behaviors\">${ b.behavior.apiName }<span if.bind=\"!$last\">, </span></span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t</div>\n</template>"; });
-define('aurelia-debugger/debug-window',['exports', 'aurelia-framework', './dom-tracker'], function (exports, _aureliaFramework, _domTracker) {
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	var DebugWindow = (function () {
-		function DebugWindow(element, tracker) {
-			_classCallCheck(this, _DebugWindow);
-
-			this.visible = true;
-			this.move = false;
-			this.ldivx = 200;
-			this.ldivy = 200;
-			this.mousex = 0;
-			this.mousey = 0;
-
-			this.element = element;
-			this.inspector;
-			this.tracker = tracker;
-		}
-
-		_createClass(DebugWindow, [{
-			key: 'attached',
-			value: function attached() {
-				var _this = this;
-
-				this.initDraggable(this.element);
-
-				window.onkeydown = function (e) {
-					if (e.ctrlKey && e.keyCode === 190) {
-						_this.capture();
-					} else if (e.ctrlKey && e.keyCode === 191) {
-						_this.toggle();
-					}
-				};
-			}
-		}, {
-			key: 'capture',
-			value: function capture() {
-				var i = 0;
-
-				console.log("Aurelia Debugger: Dumping view contexts");
-				this.tracker.tracked.forEach(function (view) {
-					i++;
-					var element = view.firstChild && view.firstChild.nodeType === 1 ? view.firstChild : view.firstChild.parentElement;
-
-					console.log("Item " + i + ": --------------------------------------------");
-					console.log(element);
-					console.log(view.bindingContext);
-					console.log("End of Item " + i + ": -------------------------------------");
-				});
-			}
-		}, {
-			key: 'toggle',
-			value: function toggle() {
-				this.visible = !this.visible;
-			}
-		}, {
-			key: 'getElementName',
-			value: function getElementName(view) {
-				var element = view.firstChild && view.firstChild.nodeType === 1 ? view.firstChild : view.firstChild.parentElement;
-				return element.localName;
-			}
-		}, {
-			key: 'getConstructorName',
-			value: function getConstructorName(view) {
-				if (!view.bindingContext) return "N/A";
-
-				return view.bindingContext.__proto__.constructor.name;
-			}
-		}, {
-			key: 'initDraggable',
-			value: function initDraggable(element) {
-				element.onmousedown = this.mousedown.bind(this);
-				document.onmouseup = this.mouseup.bind(this);
-				element.onmousemove = this.mousemove.bind(this);
-				element.style.position = 'absolute';
-				element.style.display = 'block';
-			}
-		}, {
-			key: 'mousedown',
-			value: function mousedown(e) {
-				this.move = true;
-				this.mousex = e.clientX;
-				this.mousey = e.clientY;
-			}
-		}, {
-			key: 'mouseup',
-			value: function mouseup(e) {
-				this.move = false;
-			}
-		}, {
-			key: 'mousemove',
-			value: function mousemove(e) {
-				if (this.move) {
-					this.ldivx = this.ldivx + e.clientX - this.mousex;
-					this.ldivy = this.ldivy + e.clientY - this.mousey;
-					this.mousex = e.clientX;
-					this.mousey = e.clientY;
-					var d = this.element;
-					d.style.left = this.ldivx + 'px';
-					d.style.top = this.ldivy + 'px';
-				}
-			}
-		}]);
-
-		var _DebugWindow = DebugWindow;
-		DebugWindow = (0, _aureliaFramework.inject)(Element, _domTracker.DomTracker)(DebugWindow) || DebugWindow;
-		return DebugWindow;
-	})();
-
-	exports.DebugWindow = DebugWindow;
-});
-define('aurelia-debugger/dom-tracker',['exports', 'aurelia-framework', './interception'], function (exports, _aureliaFramework, _interception) {
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-		value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	var DomTracker = (function () {
-		function DomTracker(viewCompiler, container, interception) {
-			_classCallCheck(this, _DomTracker);
-
-			this.tracked = [];
-
-			this.vc = viewCompiler;
-			this.container = container;
-			this.interception = interception;
-
-			this.interception.viewAttached = this.viewAttached.bind(this);
-			this.interception.viewDetached = this.viewDetached.bind(this);
-			this.interception.interceptViews();
-		}
-
-		_createClass(DomTracker, [{
-			key: 'viewAttached',
-			value: function viewAttached(view) {
-				var _this = this;
-
-				var element = view.firstChild && view.firstChild.nodeType === 1 ? view.firstChild : view.firstChild.parentElement;
-
-				if (!elementHasNamedParent(element, 'debug-window')) {
-					element.onmouseenter = function (e) {
-						var ix = _this.tracked.indexOf(view);
-
-						if (ix === -1) _this.tracked.push(view);
-					};
-					element.onmouseleave = function (e) {
-						var ix = _this.tracked.indexOf(view);
-
-						if (ix !== -1) _this.tracked.splice(ix, 1);
-					};
-				}
-			}
-		}, {
-			key: 'viewDetached',
-			value: function viewDetached(view) {
-				var ix = this.tracked.indexOf(view);
-
-				if (ix !== -1) this.tracked.splice(ix, 1);
-			}
-		}]);
-
-		var _DomTracker = DomTracker;
-		DomTracker = (0, _aureliaFramework.inject)(_aureliaFramework.ViewCompiler, _aureliaFramework.Container, _interception.Interception)(DomTracker) || DomTracker;
-		return DomTracker;
-	})();
-
-	exports.DomTracker = DomTracker;
-
-	function elementHasNamedParent(element, name) {
-		var node = element;
-
-		if (node.localName === name) return true;
-
-		while (node.parentElement) {
-			node = node.parentElement;
-
-			if (node.localName === name) return true;
-		}
-
-		return false;
-	}
-});
-define('aurelia-debugger/index',['exports', './dom-tracker', './create-window'], function (exports, _domTracker, _createWindow) {
-  'use strict';
-
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-  exports.configure = configure;
-
-  function configure(aurelia) {
-    aurelia.container.get(_domTracker.DomTracker);
-
-    aurelia.container.get(_createWindow.CreateWindow);
-
-    aurelia.globalResources('./debug-window');
-  }
-});;define('aurelia-debugger', ['aurelia-debugger/index'], function (main) { return main; });
-
-define('aurelia-debugger/interception',['exports', 'aurelia-templating', 'aurelia-framework', 'aurelia-dependency-injection'], function (exports, _aureliaTemplating, _aureliaFramework, _aureliaDependencyInjection) {
-  'use strict';
-
-  Object.defineProperty(exports, '__esModule', {
-    value: true
-  });
-
-  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-  var Interception = (function () {
-    function Interception() {
-      _classCallCheck(this, _Interception);
-
-      this.viewAttached = function (view) {
-        console.log("View attached");
-      };
-
-      this.viewDetached = function (view) {
-        console.log("View detached ");
-      };
-    }
-
-    _createClass(Interception, [{
-      key: 'interceptViews',
-      value: function interceptViews() {
-        if (_aureliaTemplating.View === undefined || typeof _aureliaTemplating.View.prototype.attached !== 'function') {
-          throw new Error('Unsupported version of View');
-        }
-
-        var _this = this;
-
-        var attachedImpl = _aureliaTemplating.View.prototype.attached;
-        _aureliaTemplating.View.prototype.attached = function () {
-          for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-          }
-
-          var result = attachedImpl.apply(this, args);
-
-          if (_this.viewAttached) _this.viewAttached(this);
-
-          return result;
-        };
-
-        var detachedImpl = _aureliaTemplating.View.prototype.detached;
-        _aureliaTemplating.View.prototype.detached = function () {
-          for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-            args[_key2] = arguments[_key2];
-          }
-
-          var result = detachedImpl.apply(this, args);
-
-          if (_this.viewDetached) _this.viewDetached(this);
-
-          return result;
-        };
-      }
-    }]);
-
-    var _Interception = Interception;
-    Interception = (0, _aureliaDependencyInjection.singleton)()(Interception) || Interception;
-    return Interception;
-  })();
-
-  exports.Interception = Interception;
-});
 /*! VelocityJS.org (1.4.0). (C) 2014 Julian Shapiro. MIT @license: en.wikipedia.org/wiki/MIT_License */
 
 /*************************
@@ -44903,4 +44569,579 @@ return /******/ (function(modules) { // webpackBootstrap
 ;
 //# sourceMappingURL=socket.io.js.map;define('socket.io-client', ['socket.io-client/socket.io'], function (main) { return main; });
 
-function _aureliaConfigureModuleLoader(){requirejs.config({"baseUrl":"src/","paths":{"aurelia-dependency-injection":"../node_modules/aurelia-dependency-injection/dist/amd/aurelia-dependency-injection","aurelia-bootstrapper":"../node_modules/aurelia-bootstrapper/dist/amd/aurelia-bootstrapper","aurelia-event-aggregator":"../node_modules/aurelia-event-aggregator/dist/amd/aurelia-event-aggregator","aurelia-binding":"../node_modules/aurelia-binding/dist/amd/aurelia-binding","aurelia-framework":"../node_modules/aurelia-framework/dist/amd/aurelia-framework","aurelia-history-browser":"../node_modules/aurelia-history-browser/dist/amd/aurelia-history-browser","aurelia-history":"../node_modules/aurelia-history/dist/amd/aurelia-history","aurelia-loader":"../node_modules/aurelia-loader/dist/amd/aurelia-loader","aurelia-metadata":"../node_modules/aurelia-metadata/dist/amd/aurelia-metadata","aurelia-pal":"../node_modules/aurelia-pal/dist/amd/aurelia-pal","aurelia-loader-default":"../node_modules/aurelia-loader-default/dist/amd/aurelia-loader-default","aurelia-logging":"../node_modules/aurelia-logging/dist/amd/aurelia-logging","aurelia-polyfills":"../node_modules/aurelia-polyfills/dist/amd/aurelia-polyfills","aurelia-logging-console":"../node_modules/aurelia-logging-console/dist/amd/aurelia-logging-console","aurelia-pal-browser":"../node_modules/aurelia-pal-browser/dist/amd/aurelia-pal-browser","aurelia-path":"../node_modules/aurelia-path/dist/amd/aurelia-path","aurelia-route-recognizer":"../node_modules/aurelia-route-recognizer/dist/amd/aurelia-route-recognizer","aurelia-router":"../node_modules/aurelia-router/dist/amd/aurelia-router","aurelia-templating":"../node_modules/aurelia-templating/dist/amd/aurelia-templating","aurelia-task-queue":"../node_modules/aurelia-task-queue/dist/amd/aurelia-task-queue","aurelia-templating-binding":"../node_modules/aurelia-templating-binding/dist/amd/aurelia-templating-binding","velocity-animate":"../node_modules/velocity-animate/velocity","text":"../node_modules/text/text","tether":"../node_modules/tether/dist/js/tether","app-bundle":"../scripts/app-bundle"},"packages":[{"name":"aurelia-templating-resources","location":"../node_modules/aurelia-templating-resources/dist/amd","main":"aurelia-templating-resources"},{"name":"aurelia-testing","location":"../node_modules/aurelia-testing/dist/amd","main":"aurelia-testing"},{"name":"aurelia-debugger","location":"../node_modules/aurelia-debugger/dist/amd","main":"index"},{"name":"aurelia-templating-router","location":"../node_modules/aurelia-templating-router/dist/amd","main":"aurelia-templating-router"},{"name":"socket.io-client","location":"../node_modules/socket.io-client","main":"socket.io"},{"name":"aurelia-bootstrap","location":"../node_modules/aurelia-bootstrap/dist/amd","main":"index"}],"stubModules":["text"],"shim":{},"bundles":{"app-bundle":["app","environment","main","resources/index","resources/elements/foot","resources/elements/nav","resources/elements/travelling-salesman","resources/elements/word-guess"]}})}
+define('aurelia-google-maps/index',["require", "exports", "./configure", "./google-maps"], function (require, exports, configure_1, google_maps_1) {
+    "use strict";
+    exports.Configure = configure_1.Configure;
+    exports.GoogleMaps = google_maps_1.GoogleMaps;
+    function configure(aurelia, configCallback) {
+        var instance = aurelia.container.get(configure_1.Configure);
+        // Do we have a callback function?
+        if (configCallback !== undefined && typeof (configCallback) === 'function') {
+            configCallback(instance);
+        }
+        aurelia.globalResources([
+            './google-maps'
+        ]);
+    }
+    exports.configure = configure;
+});
+;define('aurelia-google-maps', ['aurelia-google-maps/index'], function (main) { return main; });
+
+define('aurelia-google-maps/configure',["require", "exports"], function (require, exports) {
+    "use strict";
+    var Configure = (function () {
+        function Configure() {
+            this._config = {
+                apiScript: 'https://maps.googleapis.com/maps/api/js',
+                apiKey: '',
+                apiLibraries: '',
+                options: {}
+            };
+        }
+        Configure.prototype.options = function (obj) {
+            Object.assign(this._config, obj);
+        };
+        Configure.prototype.get = function (key) {
+            return this._config[key];
+        };
+        Configure.prototype.set = function (key, val) {
+            this._config[key] = val;
+            return this._config[key];
+        };
+        return Configure;
+    }());
+    exports.Configure = Configure;
+});
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+define('aurelia-google-maps/google-maps',["require", "exports", "aurelia-dependency-injection", "aurelia-templating", "aurelia-task-queue", "aurelia-binding", "aurelia-event-aggregator", "./configure"], function (require, exports, aurelia_dependency_injection_1, aurelia_templating_1, aurelia_task_queue_1, aurelia_binding_1, aurelia_event_aggregator_1, configure_1) {
+    "use strict";
+    // use constants to guard against typos
+    var GM = 'googlemap';
+    var BOUNDSCHANGED = GM + ":bounds_changed";
+    var CLICK = GM + ":click";
+    var INFOWINDOWDOMREADY = GM + ":infowindow:domready";
+    var MARKERCLICK = GM + ":marker:click";
+    //const MARKERDOUBLECLICK = `${GM}:marker:dblclick`;
+    var MARKERMOUSEOVER = GM + ":marker:mouse_over";
+    var MARKERMOUSEOUT = GM + ":marker:mouse_out";
+    var APILOADED = GM + ":api:loaded";
+    var LOCATIONADDED = GM + ":marker:added";
+    var GoogleMaps = (function () {
+        function GoogleMaps(element, taskQueue, config, bindingEngine, eventAggregator) {
+            this.address = null;
+            this.longitude = 0;
+            this.latitude = 0;
+            this.zoom = 8;
+            this.disableDefaultUI = false;
+            this.markers = [];
+            this.autoUpdateBounds = false;
+            this.mapType = 'ROADMAP';
+            this.options = {};
+            this.map = null;
+            this._renderedMarkers = [];
+            this._markersSubscription = null;
+            this._scriptPromise = null;
+            this._mapPromise = null;
+            this._mapResolve = null;
+            this._locationByAddressMarkers = [];
+            this.element = element;
+            this.taskQueue = taskQueue;
+            this.config = config;
+            this.bindingEngine = bindingEngine;
+            this.eventAggregator = eventAggregator;
+            if (!config.get('apiScript')) {
+                console.error('No API script is defined.');
+            }
+            if (!config.get('apiKey')) {
+                console.error('No API key has been specified.');
+            }
+            this.loadApiScript();
+            var self = this;
+            this._mapPromise = this._scriptPromise.then(function () {
+                return new Promise(function (resolve) {
+                    // Register the the resolve method for _mapPromise
+                    self._mapResolve = resolve;
+                });
+            });
+            this.eventAggregator.subscribe('startMarkerHighlight', function (data) {
+                var mrkr = self._renderedMarkers[data.index];
+                mrkr.setIcon(mrkr.custom.altIcon);
+                mrkr.setZIndex(window.google.maps.Marker.MAX_ZINDEX + 1);
+            });
+            this.eventAggregator.subscribe('stopMarkerHighLight', function (data) {
+                var mrkr = self._renderedMarkers[data.index];
+                mrkr.setIcon(mrkr.custom.defaultIcon);
+            });
+            this.eventAggregator.subscribe('panToMarker', function (data) {
+                self.map.panTo(self._renderedMarkers[data.index].position);
+                self.map.setZoom(17);
+            });
+            this.eventAggregator.subscribe("clearMarkers", function () {
+                this.clearMarkers();
+            });
+        }
+        GoogleMaps.prototype.clearMarkers = function () {
+            if (!this._locationByAddressMarkers || !this._renderedMarkers) {
+                return;
+            }
+            this._locationByAddressMarkers.concat(this._renderedMarkers).forEach(function (marker) {
+                marker.setMap(null);
+            });
+            this._locationByAddressMarkers = [];
+            this._renderedMarkers = [];
+        };
+        GoogleMaps.prototype.attached = function () {
+            var _this = this;
+            this.element.addEventListener('dragstart', function (evt) {
+                evt.preventDefault();
+            });
+            this.element.addEventListener('zoom_to_bounds', function () {
+                _this.zoomToMarkerBounds(true);
+            });
+            this._scriptPromise.then(function () {
+                var latLng = new window.google.maps.LatLng(parseFloat(_this.latitude), parseFloat(_this.longitude));
+                var mapTypeId = _this.getMapTypeId();
+                var options = Object.assign({}, _this.options, _this.config.get('options'), {
+                    center: latLng,
+                    zoom: parseInt(_this.zoom, 10),
+                    disableDefaultUI: _this.disableDefaultUI,
+                    mapTypeId: mapTypeId
+                });
+                _this.map = new window.google.maps.Map(_this.element, options);
+                _this._mapResolve();
+                // Add event listener for click event
+                _this.map.addListener('click', function (e) {
+                    var changeEvent;
+                    if (window.CustomEvent) {
+                        changeEvent = new CustomEvent('map-click', {
+                            detail: e,
+                            bubbles: true
+                        });
+                    }
+                    else {
+                        changeEvent = document.createEvent('CustomEvent');
+                        changeEvent.initCustomEvent('map-click', true, true, { data: e });
+                    }
+                    _this.element.dispatchEvent(changeEvent);
+                    _this.eventAggregator.publish(CLICK, e);
+                });
+                /**
+                 * As a proxy for the very noisy bounds_changed event, we'll
+                 * listen to these two instead:
+                 *
+                 * dragend */
+                _this.map.addListener('dragend', function () {
+                    _this.sendBoundsEvent();
+                });
+                /* zoom_changed */
+                _this.map.addListener('zoom_changed', function () {
+                    _this.sendBoundsEvent();
+                });
+            });
+        };
+        /**
+         * Send the map bounds as an EA event
+         *
+         * The `bounds` object is an instance of `LatLngBounds`
+         * See https://developers.google.com/maps/documentation/javascript/reference#LatLngBounds
+         */
+        GoogleMaps.prototype.sendBoundsEvent = function () {
+            var bounds = this.map.getBounds();
+            if (bounds) {
+                this.eventAggregator.publish(BOUNDSCHANGED, bounds);
+            }
+        };
+        /**
+         * Send after the api is loaded
+         * */
+        GoogleMaps.prototype.sendApiLoadedEvent = function () {
+            this.eventAggregator.publish(APILOADED, this._scriptPromise);
+        };
+        /**
+         * Render a marker on the map and add it to collection of rendered markers
+         *
+         * @param marker
+         *
+         */
+        GoogleMaps.prototype.renderMarker = function (marker) {
+            var _this = this;
+            var markerLatLng = new window.google.maps.LatLng(parseFloat(marker.latitude), parseFloat(marker.longitude));
+            this._mapPromise.then(function () {
+                // Create the marker
+                _this.createMarker({
+                    map: _this.map,
+                    position: markerLatLng
+                }).then(function (createdMarker) {
+                    /* add event listener for click on the marker,
+                     * the event payload is the marker itself */
+                    createdMarker.addListener('click', function () {
+                        if (!createdMarker.infoWindow) {
+                            _this.eventAggregator.publish(MARKERCLICK, createdMarker);
+                        }
+                        else {
+                            createdMarker.infoWindow.open(_this.map, createdMarker);
+                        }
+                    });
+                    /*add event listener for hover over the marker,
+                     *the event payload is the marker itself*/
+                    createdMarker.addListener('mouseover', function () {
+                        _this.eventAggregator.publish(MARKERMOUSEOVER, createdMarker);
+                        createdMarker.setZIndex(window.google.maps.Marker.MAX_ZINDEX + 1);
+                    });
+                    createdMarker.addListener('mouseout', function () {
+                        _this.eventAggregator.publish(MARKERMOUSEOUT, createdMarker);
+                    });
+                    createdMarker.addListener('dblclick', function () {
+                        _this.map.setZoom(15);
+                        _this.map.panTo(createdMarker.position);
+                    });
+                    // Set some optional marker properties if they exist
+                    if (marker.icon) {
+                        createdMarker.setIcon(marker.icon);
+                    }
+                    if (marker.label) {
+                        createdMarker.setLabel(marker.label);
+                    }
+                    if (marker.title) {
+                        createdMarker.setTitle(marker.title);
+                    }
+                    if (marker.infoWindow) {
+                        createdMarker.infoWindow = new window.google.maps.InfoWindow({
+                            content: marker.infoWindow.content,
+                            pixelOffset: marker.infoWindow.pixelOffset,
+                            position: marker.infoWindow.position,
+                            maxWidth: marker.infoWindow.maxWidth
+                        });
+                        createdMarker.infoWindow.addListener('domready', function () {
+                            _this.eventAggregator.publish(INFOWINDOWDOMREADY, createdMarker.infoWindow);
+                        });
+                    }
+                    // Allows arbitrary data to be stored on the marker
+                    if (marker.custom) {
+                        createdMarker.custom = marker.custom;
+                    }
+                    // Add it the array of rendered markers
+                    _this._renderedMarkers.push(createdMarker);
+                });
+            });
+        };
+        /**
+         * Geocodes an address, once the Google Map script
+         * has been properly loaded and promise instantiated.
+         *
+         * @param address string
+         * @param geocoder any
+         *
+         */
+        GoogleMaps.prototype.geocodeAddress = function (address, geocoder) {
+            var _this = this;
+            this._mapPromise.then(function () {
+                geocoder.geocode({ 'address': address }, function (results, status) {
+                    if (status !== window.google.maps.GeocoderStatus.OK) {
+                        return;
+                    }
+                    var firstResultLocation = results[0].geometry.location;
+                    _this.setCenter(firstResultLocation);
+                    _this.createMarker({
+                        map: _this.map,
+                        position: firstResultLocation
+                    }).then(function (createdMarker) {
+                        _this._locationByAddressMarkers.push(createdMarker);
+                        _this.eventAggregator.publish(LOCATIONADDED, Object.assign(createdMarker, { placeId: results[0].place_id }));
+                    });
+                });
+            });
+        };
+        /**
+         * Get Current Position
+         *
+         * Get the users current coordinate info from their browser
+         *
+         */
+        GoogleMaps.prototype.getCurrentPosition = function () {
+            if (navigator.geolocation) {
+                return navigator.geolocation.getCurrentPosition(function (position) { return Promise.resolve(position); }, function (evt) { return Promise.reject(evt); });
+            }
+            return Promise.reject('Browser Geolocation not supported or found.');
+        };
+        /**
+         * Load API Script
+         *
+         * Loads the Google Maps Javascript and then resolves a promise
+         * if loaded. If Google Maps is already loaded, we just return
+         * an immediately resolved promise.
+         *
+         * @return Promise
+         *
+         */
+        GoogleMaps.prototype.loadApiScript = function () {
+            var _this = this;
+            if (this._scriptPromise) {
+                return this._scriptPromise;
+            }
+            if (window.google === undefined || window.google.maps === undefined) {
+                // google has not been defined yet
+                var script_1 = document.createElement('script');
+                script_1.type = 'text/javascript';
+                script_1.async = true;
+                script_1.defer = true;
+                script_1.src = this.config.get('apiScript') + "?key=" + this.config.get('apiKey') + "&libraries=" + this.config.get('apiLibraries') + "&callback=myGoogleMapsCallback";
+                document.body.appendChild(script_1);
+                this._scriptPromise = new Promise(function (resolve, reject) {
+                    window.myGoogleMapsCallback = function () {
+                        _this.sendApiLoadedEvent();
+                        resolve();
+                    };
+                    script_1.onerror = function (error) {
+                        reject(error);
+                    };
+                });
+                return this._scriptPromise;
+            }
+            if (window.google && window.google.maps) {
+                // google has been defined already, so return an immediately resolved Promise that has scope
+                this._scriptPromise = new Promise(function (resolve) { resolve(); });
+                return this._scriptPromise;
+            }
+            return false;
+        };
+        GoogleMaps.prototype.setOptions = function (options) {
+            if (!this.map) {
+                return;
+            }
+            this.map.setOptions(options);
+        };
+        GoogleMaps.prototype.createMarker = function (options) {
+            return this._scriptPromise.then(function () {
+                return Promise.resolve(new window.google.maps.Marker(options));
+            });
+        };
+        GoogleMaps.prototype.getCenter = function () {
+            var _this = this;
+            this._mapPromise.then(function () {
+                return Promise.resolve(_this.map.getCenter());
+            });
+        };
+        GoogleMaps.prototype.setCenter = function (latLong) {
+            var _this = this;
+            this._mapPromise.then(function () {
+                _this.map.setCenter(latLong);
+                _this.sendBoundsEvent();
+            });
+        };
+        GoogleMaps.prototype.updateCenter = function () {
+            var _this = this;
+            this._mapPromise.then(function () {
+                var latLng = new window.google.maps.LatLng(parseFloat(_this.latitude), parseFloat(_this.longitude));
+                _this.setCenter(latLng);
+            });
+        };
+        GoogleMaps.prototype.addressChanged = function (newValue) {
+            var _this = this;
+            this._mapPromise.then(function () {
+                var geocoder = new window.google.maps.Geocoder;
+                _this.taskQueue.queueMicroTask(function () {
+                    _this.geocodeAddress(newValue, geocoder);
+                });
+            });
+        };
+        GoogleMaps.prototype.latitudeChanged = function () {
+            var _this = this;
+            this._mapPromise.then(function () {
+                _this.taskQueue.queueMicroTask(function () {
+                    _this.updateCenter();
+                });
+            });
+        };
+        GoogleMaps.prototype.longitudeChanged = function () {
+            var _this = this;
+            this._mapPromise.then(function () {
+                _this.taskQueue.queueMicroTask(function () {
+                    _this.updateCenter();
+                });
+            });
+        };
+        GoogleMaps.prototype.zoomChanged = function (newValue) {
+            var _this = this;
+            this._mapPromise.then(function () {
+                _this.taskQueue.queueMicroTask(function () {
+                    var zoomValue = parseInt(newValue, 10);
+                    _this.map.setZoom(zoomValue);
+                });
+            });
+        };
+        /**
+         * Observing changes in the entire markers object. This is critical in case the user sets marker to a new empty Array,
+         * where we need to resubscribe Observers and delete all previously rendered markers.
+         *
+         * @param newValue
+         */
+        GoogleMaps.prototype.markersChanged = function (newValue) {
+            var _this = this;
+            // If there was a previous subscription
+            if (this._markersSubscription !== null) {
+                // Dispose of the subscription
+                this._markersSubscription.dispose();
+                // Remove all the currently rendered markers
+                for (var _i = 0, _a = this._renderedMarkers; _i < _a.length; _i++) {
+                    var marker = _a[_i];
+                    marker.setMap(null);
+                }
+                // And empty the renderMarkers collection
+                this._renderedMarkers = [];
+            }
+            // Add the subcription to markers
+            this._markersSubscription = this.bindingEngine
+                .collectionObserver(this.markers)
+                .subscribe(function (splices) { _this.markerCollectionChange(splices); });
+            // Render all markers again
+            this._mapPromise.then(function () {
+                for (var _i = 0, newValue_1 = newValue; _i < newValue_1.length; _i++) {
+                    var marker = newValue_1[_i];
+                    _this.renderMarker(marker);
+                }
+            });
+            /**
+             * We queue up a task to update the bounds, because in the case of multiple bound properties changing all at once,
+             * we need to let Aurelia handle updating the other properties before we actually trigger a re-render of the map
+             */
+            this.taskQueue.queueTask(function () {
+                _this.zoomToMarkerBounds();
+            });
+        };
+        /**
+         * Handle the change to the marker collection. Collection observer returns an array of splices which contains
+         * information about the change to the collection.
+         *
+         * @param splices
+         */
+        GoogleMaps.prototype.markerCollectionChange = function (splices) {
+            var _this = this;
+            if (!splices.length) {
+                // Collection changed but the splices didn't
+                return;
+            }
+            for (var _i = 0, splices_1 = splices; _i < splices_1.length; _i++) {
+                var splice = splices_1[_i];
+                if (splice.removed.length) {
+                    // Iterate over all the removed markers
+                    for (var _a = 0, _b = splice.removed; _a < _b.length; _a++) {
+                        var removedObj = _b[_a];
+                        // Iterate over all the rendered markers to find the one to remove
+                        for (var markerIndex in this._renderedMarkers) {
+                            if (this._renderedMarkers.hasOwnProperty(markerIndex)) {
+                                var renderedMarker = this._renderedMarkers[markerIndex];
+                                // Check if the latitude/longitude matches - cast to string of float precision (1e-12)
+                                if (renderedMarker.position.lat().toFixed(12) === removedObj.latitude.toFixed(12) &&
+                                    renderedMarker.position.lng().toFixed(12) === removedObj.longitude.toFixed(12)) {
+                                    // Set the map to null;
+                                    renderedMarker.setMap(null);
+                                    // Splice out this rendered marker as well
+                                    this._renderedMarkers.splice(markerIndex, 1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                // Add the new markers to the map
+                if (splice.addedCount) {
+                    var addedMarkers = this.markers.slice(splice.index, splice.addedCount);
+                    for (var _c = 0, addedMarkers_1 = addedMarkers; _c < addedMarkers_1.length; _c++) {
+                        var addedMarker = addedMarkers_1[_c];
+                        this.renderMarker(addedMarker);
+                    }
+                }
+            }
+            /**
+             * We queue up a task to update the bounds, because in the case of multiple bound properties changing all at once,
+             * we need to let Aurelia handle updating the other properties before we actually trigger a re-render of the map
+             */
+            this.taskQueue.queueTask(function () {
+                _this.zoomToMarkerBounds();
+            });
+        };
+        GoogleMaps.prototype.zoomToMarkerBounds = function (force) {
+            var _this = this;
+            if (force === void 0) { force = false; }
+            if (typeof force === 'undefined') {
+                force = false;
+            }
+            // Unless forced, if there's no markers, or not auto update bounds
+            if (!force && (!this.markers.length || !this.autoUpdateBounds)) {
+                return;
+            }
+            this._mapPromise.then(function () {
+                var bounds = new window.google.maps.LatLngBounds();
+                for (var _i = 0, _a = _this.markers; _i < _a.length; _i++) {
+                    var marker = _a[_i];
+                    // extend the bounds to include each marker's position
+                    var markerLatLng = new window.google.maps.LatLng(parseFloat(marker.latitude), parseFloat(marker.longitude));
+                    bounds.extend(markerLatLng);
+                }
+                _this.map.fitBounds(bounds);
+            });
+        };
+        GoogleMaps.prototype.getMapTypeId = function () {
+            if (this.mapType.toUpperCase() === 'HYBRID') {
+                return window.google.maps.MapTypeId.HYBRID;
+            }
+            else if (this.mapType.toUpperCase() === 'SATELLITE') {
+                return window.google.maps.MapTypeId.SATELLITE;
+            }
+            else if (this.mapType.toUpperCase() === 'TERRAIN') {
+                return window.google.maps.MapTypeId.TERRAIN;
+            }
+            return window.google.maps.MapTypeId.ROADMAP;
+        };
+        GoogleMaps.prototype.error = function () {
+            console.error.apply(console, arguments);
+        };
+        GoogleMaps.prototype.resize = function () {
+            window.google.maps.event.trigger(this.map, 'resize');
+        };
+        return GoogleMaps;
+    }());
+    __decorate([
+        aurelia_templating_1.bindable
+    ], GoogleMaps.prototype, "address", void 0);
+    __decorate([
+        aurelia_templating_1.bindable
+    ], GoogleMaps.prototype, "longitude", void 0);
+    __decorate([
+        aurelia_templating_1.bindable
+    ], GoogleMaps.prototype, "latitude", void 0);
+    __decorate([
+        aurelia_templating_1.bindable
+    ], GoogleMaps.prototype, "zoom", void 0);
+    __decorate([
+        aurelia_templating_1.bindable
+    ], GoogleMaps.prototype, "disableDefaultUI", void 0);
+    __decorate([
+        aurelia_templating_1.bindable
+    ], GoogleMaps.prototype, "markers", void 0);
+    __decorate([
+        aurelia_templating_1.bindable
+    ], GoogleMaps.prototype, "autoUpdateBounds", void 0);
+    __decorate([
+        aurelia_templating_1.bindable
+    ], GoogleMaps.prototype, "mapType", void 0);
+    __decorate([
+        aurelia_templating_1.bindable
+    ], GoogleMaps.prototype, "options", void 0);
+    GoogleMaps = __decorate([
+        aurelia_templating_1.customElement('google-map'),
+        aurelia_dependency_injection_1.inject(Element, aurelia_task_queue_1.TaskQueue, configure_1.Configure, aurelia_binding_1.BindingEngine, aurelia_event_aggregator_1.EventAggregator)
+    ], GoogleMaps);
+    exports.GoogleMaps = GoogleMaps;
+});
+
+define('text!aurelia-google-maps/google-maps.html', ['module'], function(module) { module.exports = "<template>\r\n    <require from=\"./maps.css\"></require>\r\n</template>\r\n"; });
+define('text!aurelia-google-maps/maps.css', ['module'], function(module) { module.exports = "google-map {\r\n    display: block;\r\n    height: 350px;\r\n}\r\n"; });
+function _aureliaConfigureModuleLoader(){requirejs.config({"baseUrl":"src/","paths":{"aurelia-binding":"../node_modules/aurelia-binding/dist/amd/aurelia-binding","aurelia-bootstrapper":"../node_modules/aurelia-bootstrapper/dist/amd/aurelia-bootstrapper","aurelia-dependency-injection":"../node_modules/aurelia-dependency-injection/dist/amd/aurelia-dependency-injection","aurelia-event-aggregator":"../node_modules/aurelia-event-aggregator/dist/amd/aurelia-event-aggregator","aurelia-framework":"../node_modules/aurelia-framework/dist/amd/aurelia-framework","aurelia-history":"../node_modules/aurelia-history/dist/amd/aurelia-history","aurelia-history-browser":"../node_modules/aurelia-history-browser/dist/amd/aurelia-history-browser","aurelia-loader":"../node_modules/aurelia-loader/dist/amd/aurelia-loader","aurelia-loader-default":"../node_modules/aurelia-loader-default/dist/amd/aurelia-loader-default","aurelia-logging":"../node_modules/aurelia-logging/dist/amd/aurelia-logging","aurelia-logging-console":"../node_modules/aurelia-logging-console/dist/amd/aurelia-logging-console","aurelia-metadata":"../node_modules/aurelia-metadata/dist/amd/aurelia-metadata","aurelia-pal":"../node_modules/aurelia-pal/dist/amd/aurelia-pal","aurelia-pal-browser":"../node_modules/aurelia-pal-browser/dist/amd/aurelia-pal-browser","aurelia-path":"../node_modules/aurelia-path/dist/amd/aurelia-path","aurelia-polyfills":"../node_modules/aurelia-polyfills/dist/amd/aurelia-polyfills","aurelia-route-recognizer":"../node_modules/aurelia-route-recognizer/dist/amd/aurelia-route-recognizer","aurelia-router":"../node_modules/aurelia-router/dist/amd/aurelia-router","aurelia-task-queue":"../node_modules/aurelia-task-queue/dist/amd/aurelia-task-queue","aurelia-templating":"../node_modules/aurelia-templating/dist/amd/aurelia-templating","aurelia-templating-binding":"../node_modules/aurelia-templating-binding/dist/amd/aurelia-templating-binding","text":"../node_modules/text/text","velocity-animate":"../node_modules/velocity-animate/velocity","tether":"../node_modules/tether/dist/js/tether","app-bundle":"../scripts/app-bundle"},"packages":[{"name":"aurelia-templating-resources","location":"../node_modules/aurelia-templating-resources/dist/amd","main":"aurelia-templating-resources"},{"name":"aurelia-templating-router","location":"../node_modules/aurelia-templating-router/dist/amd","main":"aurelia-templating-router"},{"name":"aurelia-testing","location":"../node_modules/aurelia-testing/dist/amd","main":"aurelia-testing"},{"name":"aurelia-bootstrap","location":"../node_modules/aurelia-bootstrap/dist/amd","main":"index"},{"name":"socket.io-client","location":"../node_modules/socket.io-client","main":"socket.io"},{"name":"aurelia-google-maps","location":"../node_modules/aurelia-google-maps/dist/amd","main":"index"}],"stubModules":["text"],"shim":{},"bundles":{"app-bundle":["app","environment","main","resources/index","resources/elements/foot","resources/elements/nav","resources/elements/travelling-salesman","resources/elements/word-guess"]}})}

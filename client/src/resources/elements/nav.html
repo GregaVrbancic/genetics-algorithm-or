@@ -9,12 +9,12 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="">GA PROJECT</a>
+        <a class="navbar-brand" route-href="route:WordGuess">GA PROJECT</a>
       </div>
       <div class="navbar-collapse collapse navbar-right">
         <ul class="nav navbar-nav">
           <li class="${router.currentInstruction.config.name == 'WordGuess' ? 'active' : ''}"><a route-href="route:WordGuess">BASIC</a></li>
-          <li class="${router.currentInstruction.config.name == 'TravellingSalesman' ? 'active' : ''}"><a route-href="route:TravellingSalesman">ADVANCE</a></li>
+          <li class="${router.currentInstruction.config.name == 'TravellingSalesman' ? 'active' : ''}"><a route-href="route:TravellingSalesman">ADVANCED</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>

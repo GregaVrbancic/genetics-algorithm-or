@@ -11,11 +11,13 @@
     "aurelia-animator-css": "^1.0.0",
     "aurelia-bootstrap": "^0.1.11",
     "aurelia-bootstrapper": "^1.0.0",
+    "aurelia-google-maps": "1.0.17",
     "bluebird": "^3.4.1",
     "bootstrap-sass": "^3.3.7",
     "font-awesome": "^4.7.0",
     "requirejs": "^2.3.2",
     "socket.io": "^1.7.2",
+    "spinkit": "^1.2.5",
     "tether": "^1.4.0",
     "text": "github:requirejs/text#latest",
     "velocity-animate": "^1.4.0"
