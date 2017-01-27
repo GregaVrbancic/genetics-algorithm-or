@@ -26993,6 +26993,340 @@ define('aurelia-testing/component-tester',['exports', 'aurelia-templating', 'aur
     return ComponentTester;
   }();
 });
+define('aurelia-debugger/index',['exports', './dom-tracker', './create-window'], function (exports, _domTracker, _createWindow) {
+  'use strict';
+
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  exports.configure = configure;
+
+  function configure(aurelia) {
+    aurelia.container.get(_domTracker.DomTracker);
+
+    aurelia.container.get(_createWindow.CreateWindow);
+
+    aurelia.globalResources('./debug-window');
+  }
+});;define('aurelia-debugger', ['aurelia-debugger/index'], function (main) { return main; });
+
+define('aurelia-debugger/create-window',['exports', 'aurelia-framework'], function (exports, _aureliaFramework) {
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var CreateWindow = (function () {
+		function CreateWindow(vc, vr, container) {
+			_classCallCheck(this, _CreateWindow);
+
+			document.addEventListener('aurelia-composed', function (e) {
+				console.log("aurelia-started");
+
+				var host = document.createElement("div");
+				var windowHost = document.createElement("debug-window");
+				host.appendChild(windowHost);
+
+				var view = vc.compile(host).create(container, undefined);
+				var slot = new _aureliaFramework.ViewSlot(document.body, true);
+
+				slot.add(view);
+				slot.attached();
+			}, false);
+		}
+
+		var _CreateWindow = CreateWindow;
+		CreateWindow = (0, _aureliaFramework.inject)(_aureliaFramework.ViewCompiler, _aureliaFramework.ViewResources, _aureliaFramework.Container)(CreateWindow) || CreateWindow;
+		return CreateWindow;
+	})();
+
+	exports.CreateWindow = CreateWindow;
+});
+define('text!aurelia-debugger/debug-window.css', ['module'], function(module) { module.exports = ".debug-popup {\n\tborder: 1px solid gainsboro;\n\tmin-width: 400px;\n\tbackground: white;\n\tz-index: 1000;\n\tposition: absolute;\n\tbox-shadow: 2px 2px 5px #bbbbbb;\n\tpadding: 8px;\n\tborder-radius: 5px;\n}\n\n.debug-popup .prop {\n\tfont-weight: bold;\n}\n\n.debug-element-highlight * {\n\tbackground-color: mistyrose !important;\n}\n\n\n.debug-popup h1 {\n    border-bottom: 1px solid gainsboro;\n    margin: 0px;\n    padding-bottom: 4px;\n    font-size: 12pt;\n    font-weight: bold;\n}\n\n.debug-popup .view-hints {\n\tposition: relative;\n    display: block;\n    padding: 0px;\n    background-color: #fff;\n    margin-bottom: 10px;\n}\n\n.debug-popup .view-hints li {\n    border: 1px solid #ddd;\n    border-bottom: none;\n    padding: 4px;\n    margin: 0;\n    border-collapse: collapse;\n}\n\n.debug-popup .view-hints li:first-child {\n\tbackground-color: #888;\n\tcolor: white;\n\tborder-top-left-radius: 5px;\n\tborder-top-right-radius: 5px;\n}\n\n.debug-popup .view-hints li:last-child {\n\tborder-bottom: 1px solid #ddd;\n\tborder-bottom-left-radius: 5px;\n\tborder-bottom-right-radius: 5px;\n}\n\n.debug-popup .view-hints li {\t\n    display: block;\n    list-style-type: disc;\n}"; });
+define('text!aurelia-debugger/debug-window.html', ['module'], function(module) { module.exports = "<template>\n\t<require from=\"./debug-window.css\"></require>\n\t<div class=\"debug-popup\" show.bind=\"visible\">\n\t\t<h1>Context Inspector - CTRL + / to toggle</h1>\n\t\t<div>\n\t\t\t<p>Press CTRL + . (full stop) to dump to console</p>\n\t\t\t<ul repeat.for=\"view of tracker.tracked\" class=\"view-hints\">\n\t\t\t\t<li>\n\t\t\t\t\t<span>\n\t\t\t\t\t\t<strong>Item ${ $index + 1 }, View:</strong> &lt;${ $parent.getElementName(view) }&gt;\n\t\t\t\t\t</span>\n\t\t\t\t\t<span>\n\t\t\t\t\t\t<strong>ViewModel:</strong> ${ $parent.getConstructorName(view) }\n\t\t\t\t\t</span>\t\t\n\t\t\t\t</li>\n\t\t\t\t<li if.bind=\"view.behaviors.length > 0\">\n\t\t\t\t\t<strong>Attached behaviours:</strong> <span repeat.for=\"b of view.behaviors\">${ b.behavior.apiName }<span if.bind=\"!$last\">, </span></span>\n\t\t\t\t</li>\n\t\t\t</ul>\n\t\t</div>\n\t</div>\n</template>"; });
+define('aurelia-debugger/debug-window',['exports', 'aurelia-framework', './dom-tracker'], function (exports, _aureliaFramework, _domTracker) {
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var DebugWindow = (function () {
+		function DebugWindow(element, tracker) {
+			_classCallCheck(this, _DebugWindow);
+
+			this.visible = true;
+			this.move = false;
+			this.ldivx = 200;
+			this.ldivy = 200;
+			this.mousex = 0;
+			this.mousey = 0;
+
+			this.element = element;
+			this.inspector;
+			this.tracker = tracker;
+		}
+
+		_createClass(DebugWindow, [{
+			key: 'attached',
+			value: function attached() {
+				var _this = this;
+
+				this.initDraggable(this.element);
+
+				window.onkeydown = function (e) {
+					if (e.ctrlKey && e.keyCode === 190) {
+						_this.capture();
+					} else if (e.ctrlKey && e.keyCode === 191) {
+						_this.toggle();
+					}
+				};
+			}
+		}, {
+			key: 'capture',
+			value: function capture() {
+				var i = 0;
+
+				console.log("Aurelia Debugger: Dumping view contexts");
+				this.tracker.tracked.forEach(function (view) {
+					i++;
+					var element = view.firstChild && view.firstChild.nodeType === 1 ? view.firstChild : view.firstChild.parentElement;
+
+					console.log("Item " + i + ": --------------------------------------------");
+					console.log(element);
+					console.log(view.bindingContext);
+					console.log("End of Item " + i + ": -------------------------------------");
+				});
+			}
+		}, {
+			key: 'toggle',
+			value: function toggle() {
+				this.visible = !this.visible;
+			}
+		}, {
+			key: 'getElementName',
+			value: function getElementName(view) {
+				var element = view.firstChild && view.firstChild.nodeType === 1 ? view.firstChild : view.firstChild.parentElement;
+				return element.localName;
+			}
+		}, {
+			key: 'getConstructorName',
+			value: function getConstructorName(view) {
+				if (!view.bindingContext) return "N/A";
+
+				return view.bindingContext.__proto__.constructor.name;
+			}
+		}, {
+			key: 'initDraggable',
+			value: function initDraggable(element) {
+				element.onmousedown = this.mousedown.bind(this);
+				document.onmouseup = this.mouseup.bind(this);
+				element.onmousemove = this.mousemove.bind(this);
+				element.style.position = 'absolute';
+				element.style.display = 'block';
+			}
+		}, {
+			key: 'mousedown',
+			value: function mousedown(e) {
+				this.move = true;
+				this.mousex = e.clientX;
+				this.mousey = e.clientY;
+			}
+		}, {
+			key: 'mouseup',
+			value: function mouseup(e) {
+				this.move = false;
+			}
+		}, {
+			key: 'mousemove',
+			value: function mousemove(e) {
+				if (this.move) {
+					this.ldivx = this.ldivx + e.clientX - this.mousex;
+					this.ldivy = this.ldivy + e.clientY - this.mousey;
+					this.mousex = e.clientX;
+					this.mousey = e.clientY;
+					var d = this.element;
+					d.style.left = this.ldivx + 'px';
+					d.style.top = this.ldivy + 'px';
+				}
+			}
+		}]);
+
+		var _DebugWindow = DebugWindow;
+		DebugWindow = (0, _aureliaFramework.inject)(Element, _domTracker.DomTracker)(DebugWindow) || DebugWindow;
+		return DebugWindow;
+	})();
+
+	exports.DebugWindow = DebugWindow;
+});
+define('aurelia-debugger/dom-tracker',['exports', 'aurelia-framework', './interception'], function (exports, _aureliaFramework, _interception) {
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+		value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var DomTracker = (function () {
+		function DomTracker(viewCompiler, container, interception) {
+			_classCallCheck(this, _DomTracker);
+
+			this.tracked = [];
+
+			this.vc = viewCompiler;
+			this.container = container;
+			this.interception = interception;
+
+			this.interception.viewAttached = this.viewAttached.bind(this);
+			this.interception.viewDetached = this.viewDetached.bind(this);
+			this.interception.interceptViews();
+		}
+
+		_createClass(DomTracker, [{
+			key: 'viewAttached',
+			value: function viewAttached(view) {
+				var _this = this;
+
+				var element = view.firstChild && view.firstChild.nodeType === 1 ? view.firstChild : view.firstChild.parentElement;
+
+				if (!elementHasNamedParent(element, 'debug-window')) {
+					element.onmouseenter = function (e) {
+						var ix = _this.tracked.indexOf(view);
+
+						if (ix === -1) _this.tracked.push(view);
+					};
+					element.onmouseleave = function (e) {
+						var ix = _this.tracked.indexOf(view);
+
+						if (ix !== -1) _this.tracked.splice(ix, 1);
+					};
+				}
+			}
+		}, {
+			key: 'viewDetached',
+			value: function viewDetached(view) {
+				var ix = this.tracked.indexOf(view);
+
+				if (ix !== -1) this.tracked.splice(ix, 1);
+			}
+		}]);
+
+		var _DomTracker = DomTracker;
+		DomTracker = (0, _aureliaFramework.inject)(_aureliaFramework.ViewCompiler, _aureliaFramework.Container, _interception.Interception)(DomTracker) || DomTracker;
+		return DomTracker;
+	})();
+
+	exports.DomTracker = DomTracker;
+
+	function elementHasNamedParent(element, name) {
+		var node = element;
+
+		if (node.localName === name) return true;
+
+		while (node.parentElement) {
+			node = node.parentElement;
+
+			if (node.localName === name) return true;
+		}
+
+		return false;
+	}
+});
+define('aurelia-debugger/index',['exports', './dom-tracker', './create-window'], function (exports, _domTracker, _createWindow) {
+  'use strict';
+
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+  exports.configure = configure;
+
+  function configure(aurelia) {
+    aurelia.container.get(_domTracker.DomTracker);
+
+    aurelia.container.get(_createWindow.CreateWindow);
+
+    aurelia.globalResources('./debug-window');
+  }
+});;define('aurelia-debugger', ['aurelia-debugger/index'], function (main) { return main; });
+
+define('aurelia-debugger/interception',['exports', 'aurelia-templating', 'aurelia-framework', 'aurelia-dependency-injection'], function (exports, _aureliaTemplating, _aureliaFramework, _aureliaDependencyInjection) {
+  'use strict';
+
+  Object.defineProperty(exports, '__esModule', {
+    value: true
+  });
+
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+  var Interception = (function () {
+    function Interception() {
+      _classCallCheck(this, _Interception);
+
+      this.viewAttached = function (view) {
+        console.log("View attached");
+      };
+
+      this.viewDetached = function (view) {
+        console.log("View detached ");
+      };
+    }
+
+    _createClass(Interception, [{
+      key: 'interceptViews',
+      value: function interceptViews() {
+        if (_aureliaTemplating.View === undefined || typeof _aureliaTemplating.View.prototype.attached !== 'function') {
+          throw new Error('Unsupported version of View');
+        }
+
+        var _this = this;
+
+        var attachedImpl = _aureliaTemplating.View.prototype.attached;
+        _aureliaTemplating.View.prototype.attached = function () {
+          for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          var result = attachedImpl.apply(this, args);
+
+          if (_this.viewAttached) _this.viewAttached(this);
+
+          return result;
+        };
+
+        var detachedImpl = _aureliaTemplating.View.prototype.detached;
+        _aureliaTemplating.View.prototype.detached = function () {
+          for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            args[_key2] = arguments[_key2];
+          }
+
+          var result = detachedImpl.apply(this, args);
+
+          if (_this.viewDetached) _this.viewDetached(this);
+
+          return result;
+        };
+      }
+    }]);
+
+    var _Interception = Interception;
+    Interception = (0, _aureliaDependencyInjection.singleton)()(Interception) || Interception;
+    return Interception;
+  })();
+
+  exports.Interception = Interception;
+});
 /*! VelocityJS.org (1.4.0). (C) 2014 Julian Shapiro. MIT @license: en.wikipedia.org/wiki/MIT_License */
 
 /*************************
@@ -44569,4 +44903,4 @@ return /******/ (function(modules) { // webpackBootstrap
 ;
 //# sourceMappingURL=socket.io.js.map;define('socket.io-client', ['socket.io-client/socket.io'], function (main) { return main; });
 
-function _aureliaConfigureModuleLoader(){requirejs.config({"baseUrl":"src/","paths":{"aurelia-dependency-injection":"../node_modules/aurelia-dependency-injection/dist/amd/aurelia-dependency-injection","aurelia-binding":"../node_modules/aurelia-binding/dist/amd/aurelia-binding","aurelia-event-aggregator":"../node_modules/aurelia-event-aggregator/dist/amd/aurelia-event-aggregator","aurelia-bootstrapper":"../node_modules/aurelia-bootstrapper/dist/amd/aurelia-bootstrapper","aurelia-framework":"../node_modules/aurelia-framework/dist/amd/aurelia-framework","aurelia-history-browser":"../node_modules/aurelia-history-browser/dist/amd/aurelia-history-browser","aurelia-history":"../node_modules/aurelia-history/dist/amd/aurelia-history","aurelia-loader":"../node_modules/aurelia-loader/dist/amd/aurelia-loader","aurelia-metadata":"../node_modules/aurelia-metadata/dist/amd/aurelia-metadata","aurelia-pal":"../node_modules/aurelia-pal/dist/amd/aurelia-pal","aurelia-loader-default":"../node_modules/aurelia-loader-default/dist/amd/aurelia-loader-default","aurelia-logging-console":"../node_modules/aurelia-logging-console/dist/amd/aurelia-logging-console","aurelia-polyfills":"../node_modules/aurelia-polyfills/dist/amd/aurelia-polyfills","aurelia-pal-browser":"../node_modules/aurelia-pal-browser/dist/amd/aurelia-pal-browser","aurelia-path":"../node_modules/aurelia-path/dist/amd/aurelia-path","aurelia-logging":"../node_modules/aurelia-logging/dist/amd/aurelia-logging","aurelia-route-recognizer":"../node_modules/aurelia-route-recognizer/dist/amd/aurelia-route-recognizer","aurelia-router":"../node_modules/aurelia-router/dist/amd/aurelia-router","aurelia-templating":"../node_modules/aurelia-templating/dist/amd/aurelia-templating","aurelia-task-queue":"../node_modules/aurelia-task-queue/dist/amd/aurelia-task-queue","aurelia-templating-binding":"../node_modules/aurelia-templating-binding/dist/amd/aurelia-templating-binding","text":"../node_modules/text/text","tether":"../node_modules/tether/dist/js/tether","velocity-animate":"../node_modules/velocity-animate/velocity","app-bundle":"../scripts/app-bundle"},"packages":[{"name":"aurelia-testing","location":"../node_modules/aurelia-testing/dist/amd","main":"aurelia-testing"},{"name":"aurelia-templating-router","location":"../node_modules/aurelia-templating-router/dist/amd","main":"aurelia-templating-router"},{"name":"socket.io-client","location":"../node_modules/socket.io-client","main":"socket.io"},{"name":"aurelia-bootstrap","location":"../node_modules/aurelia-bootstrap/dist/amd","main":"index"},{"name":"aurelia-templating-resources","location":"../node_modules/aurelia-templating-resources/dist/amd","main":"aurelia-templating-resources"}],"stubModules":["text"],"shim":{},"bundles":{"app-bundle":["app","environment","main","resources/index","resources/elements/foot","resources/elements/nav","resources/elements/travelling-salesman","resources/elements/word-guess"]}})}
+function _aureliaConfigureModuleLoader(){requirejs.config({"baseUrl":"src/","paths":{"aurelia-dependency-injection":"../node_modules/aurelia-dependency-injection/dist/amd/aurelia-dependency-injection","aurelia-bootstrapper":"../node_modules/aurelia-bootstrapper/dist/amd/aurelia-bootstrapper","aurelia-event-aggregator":"../node_modules/aurelia-event-aggregator/dist/amd/aurelia-event-aggregator","aurelia-binding":"../node_modules/aurelia-binding/dist/amd/aurelia-binding","aurelia-framework":"../node_modules/aurelia-framework/dist/amd/aurelia-framework","aurelia-history-browser":"../node_modules/aurelia-history-browser/dist/amd/aurelia-history-browser","aurelia-history":"../node_modules/aurelia-history/dist/amd/aurelia-history","aurelia-loader":"../node_modules/aurelia-loader/dist/amd/aurelia-loader","aurelia-metadata":"../node_modules/aurelia-metadata/dist/amd/aurelia-metadata","aurelia-pal":"../node_modules/aurelia-pal/dist/amd/aurelia-pal","aurelia-loader-default":"../node_modules/aurelia-loader-default/dist/amd/aurelia-loader-default","aurelia-logging":"../node_modules/aurelia-logging/dist/amd/aurelia-logging","aurelia-polyfills":"../node_modules/aurelia-polyfills/dist/amd/aurelia-polyfills","aurelia-logging-console":"../node_modules/aurelia-logging-console/dist/amd/aurelia-logging-console","aurelia-pal-browser":"../node_modules/aurelia-pal-browser/dist/amd/aurelia-pal-browser","aurelia-path":"../node_modules/aurelia-path/dist/amd/aurelia-path","aurelia-route-recognizer":"../node_modules/aurelia-route-recognizer/dist/amd/aurelia-route-recognizer","aurelia-router":"../node_modules/aurelia-router/dist/amd/aurelia-router","aurelia-templating":"../node_modules/aurelia-templating/dist/amd/aurelia-templating","aurelia-task-queue":"../node_modules/aurelia-task-queue/dist/amd/aurelia-task-queue","aurelia-templating-binding":"../node_modules/aurelia-templating-binding/dist/amd/aurelia-templating-binding","velocity-animate":"../node_modules/velocity-animate/velocity","text":"../node_modules/text/text","tether":"../node_modules/tether/dist/js/tether","app-bundle":"../scripts/app-bundle"},"packages":[{"name":"aurelia-templating-resources","location":"../node_modules/aurelia-templating-resources/dist/amd","main":"aurelia-templating-resources"},{"name":"aurelia-testing","location":"../node_modules/aurelia-testing/dist/amd","main":"aurelia-testing"},{"name":"aurelia-debugger","location":"../node_modules/aurelia-debugger/dist/amd","main":"index"},{"name":"aurelia-templating-router","location":"../node_modules/aurelia-templating-router/dist/amd","main":"aurelia-templating-router"},{"name":"socket.io-client","location":"../node_modules/socket.io-client","main":"socket.io"},{"name":"aurelia-bootstrap","location":"../node_modules/aurelia-bootstrap/dist/amd","main":"index"}],"stubModules":["text"],"shim":{},"bundles":{"app-bundle":["app","environment","main","resources/index","resources/elements/foot","resources/elements/nav","resources/elements/travelling-salesman","resources/elements/word-guess"]}})}

@@ -8,14 +8,22 @@ export class WordGuess {
     this.info = 'The longer is sequence of letters, more difficult is for genetic algorithm to "guess" it and also more time consuming it is.';
     this.responses = [];
     this.sequence = '';
+    this.room = '';
     this.socket = io.connect('http://localhost:5000/word-guess');
   }
 
-  activate() {
+  attached() {
+    this.socket.on('connected response', response => {
+      console.log(response);
+      this.room === '' ? this.room = response.room : this.room = this.room;
+      this.socket.off('connected response');
+    });
     this.socket.on('server response', response => this.responses.push(response));
   }
 
-  deactivate() {
+  detached() {
+    this.socket.emit('leave', { room: this.room });
+    this.room = '';
     this.socket.off('server response', function() {
       console.log('deactivate listener on "server response"');
     });
@@ -24,6 +32,6 @@ export class WordGuess {
   sendStartCommand() {
     this.responses = [];
     console.log('send start command: ' + this.sequence);
-    this.socket.emit('start', { command: this.sequence });
+    this.socket.emit('start', { command: this.sequence, room: this.room });
   }
 }

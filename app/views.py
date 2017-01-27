@@ -1,9 +1,9 @@
 from app import app, genetic, socketio
 from flask import render_template, send_from_directory
-from flask_socketio import emit, disconnect
+from flask_socketio import emit, disconnect, join_room, leave_room
 from threading import Thread, Event
 import datetime
-import random
+import random, string
 
 @app.route('/')
 @app.route('/index')
@@ -15,25 +15,37 @@ def send_js(path):
     return send_from_directory('../client/scripts', path)
 
 @socketio.on('connect', namespace='/word-guess')
-def test_connect():
+def on_connect_word_guess():
     print('Client connected to word-guess')
+    gen_room = generateRoom()
+    join_room(gen_room)
+    socketio.emit('connected response', {'room': gen_room}, namespace='/word-guess', broadcast=False)
+
+def generateRoom():
+    return ''.join(random.choice(string.ascii_lowercase) for i in range(15))
+
+@socketio.on('leave', namespace='/word-guess')
+def on_leave_word_guess(command):
+    print('Client disconnected from word guess')
+    leave_room(command['room'])
 
 @socketio.on('start', namespace='/word-guess')
-def test_message(command):
+def on_start_word_guess(command):
     print('Command start on namespace word-guess received: ' + command['command'])
     thread = Thread()
     thread_stop_event = Event()
     
     if not thread.isAlive():
         print('Starting GuessWordThread...')
-        thread = GuessWordThread(command['command'])
+        thread = GuessWordThread(command)
         thread.start()
 
 class GuessWordThread(Thread):
-    def __init__(self, target):
+    def __init__(self, command):
         self.delay = 1
         self.geneset = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!.,"
-        self.target = target
+        self.target = command['command']
+        self.room = command['room']
         super(GuessWordThread, self).__init__()
 
     def guessWord(self):
@@ -44,7 +56,7 @@ class GuessWordThread(Thread):
 
         def fnDisplay(candidate):
             timeDiff = datetime.datetime.now() - startTime
-            socketio.emit('server response', {'genes': candidate.Genes, 'fitness': candidate.Fitness, 'time': str(timeDiff)}, namespace='/word-guess', broadcast=False)
+            socketio.emit('server response', {'genes': candidate.Genes, 'fitness': candidate.Fitness, 'time': str(timeDiff)}, namespace='/word-guess', room=self.room, broadcast=False)
 
         optimalFitness = len(self.target)
         best = genetic.get_best(fnGetFitness, len(self.target), optimalFitness, self.geneset, fnDisplay)
