@@ -1,4 +1,4 @@
-#!/Users/gregavrbancic/Development/projects/GeneticsAlgorithm_OR/flask/bin/python3.5
+#!/Users/gregavrbancic/Development/projects/GeneticsAlgorithm_OR/flask/bin/python2.7
 
 # Author: 
 # Contact: grubert@users.sf.net

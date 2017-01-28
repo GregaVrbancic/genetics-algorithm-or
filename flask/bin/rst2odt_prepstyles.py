@@ -1,4 +1,4 @@
-#!/Users/gregavrbancic/Development/projects/GeneticsAlgorithm_OR/flask/bin/python3.5
+#!/Users/gregavrbancic/Development/projects/GeneticsAlgorithm_OR/flask/bin/python2.7
 
 # $Id: rst2odt_prepstyles.py 5839 2009-01-07 19:09:28Z dkuhlman $
 # Author: Dave Kuhlman <dkuhlman@rexx.com>

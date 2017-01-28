@@ -1,4 +1,4 @@
-#!/Users/gregavrbancic/Development/projects/GeneticsAlgorithm_OR/flask/bin/python3.5
+#!/Users/gregavrbancic/Development/projects/GeneticsAlgorithm_OR/flask/bin/python2.7
 
 # $Id: rst2html.py 4564 2006-05-21 20:44:42Z wiemann $
 # Author: David Goodger <goodger@python.org>
