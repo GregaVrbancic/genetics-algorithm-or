@@ -4,8 +4,7 @@ export class TravellingSalesman {
   constructor() {
     this.title = 'Advanced Genetic Algorithm Example - Travelling Salesman';
     this.description = 'In this advanced example the genetic algorithm is used for solving travelling salesman problem.';
-    this.info = 'The more markers you set on the map, more difficult it is for genetic algorithm to solve the problem and also more time consuming it is.';
-    this.instruction = 'Select at least 3 locations on map and then click run!';
+    this.info = 'The higher number of locations you set, the more difficult it is for genetic algorithm to solve the problem and also more time consuming it is.';
     this.room = '';
     this.numLocations = 10;
     this.numGenerations = 1500;
