@@ -218,7 +218,6 @@ define('resources/elements/travelling-salesman',['exports', 'aurelia-fetch-clien
           _this.showSpinner = false;
         }, function (error) {
           _this.setDefaultLocation();
-          window.google.maps.event.trigger(_this.map, 'resize');
           _this.showSpinner = false;
         });
       } else {

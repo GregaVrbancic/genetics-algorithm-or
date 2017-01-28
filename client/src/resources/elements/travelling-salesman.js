@@ -22,7 +22,6 @@ export class TravellingSalesman {
         this.showSpinner = false;
       }, (error) => {
         this.setDefaultLocation();
-        window.google.maps.event.trigger(this.map, 'resize');
         this.showSpinner = false;
       });
     } else {
