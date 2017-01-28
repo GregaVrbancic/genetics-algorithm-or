@@ -21,12 +21,24 @@ def on_connect_word_guess():
     join_room(gen_room)
     socketio.emit('connected response', {'room': gen_room}, namespace='/word-guess', broadcast=False)
 
+@socketio.on('connect', namespace='/travelling-salesman')
+def on_connect_travelling_salesman():
+    print('Client connected to travelling-salesman')
+    gen_room = generateRoom()
+    join_room(gen_room)
+    socketio.emit('connected response', {'room': gen_room}, namespace='/travelling-salesman', broadcast=False)
+
 def generateRoom():
     return ''.join(random.choice(string.ascii_lowercase) for i in range(15))
 
 @socketio.on('leave', namespace='/word-guess')
 def on_leave_word_guess(command):
     print('Client disconnected from word guess')
+    leave_room(command['room'])
+
+@socketio.on('leave', namespace='/travelling-salesman')
+def on_leave_travelling_salesman():
+    print('Client disconneted from travelling salesman')
     leave_room(command['room'])
 
 @socketio.on('start', namespace='/word-guess')
@@ -39,6 +51,11 @@ def on_start_word_guess(command):
         print('Starting GuessWordThread...')
         thread = GuessWordThread(command)
         thread.start()
+
+@socketio.on('start', namespace='/travelling-salesman')
+def on_start_travelling_salesman(command):
+    print('Command start on namespace travelling-salesman received: ' + str(command))
+
 
 class GuessWordThread(Thread):
     def __init__(self, command):

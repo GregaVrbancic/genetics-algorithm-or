@@ -35,7 +35,8 @@
                     map-click.delegate="mapClickHandler($event)"
                     markers.bind="markers"
                     if.bind="geolocation" zoom=12></google-map>
-        <p class="bg-warning informations" show.bind="geolocation && markers.length < 3">${instruction}</p>
+        <p class="bg-warning informations" show.bind="geolocation && markers.length < 3">${instruction}</p>   
+        <p class="bg-danger informations" show.bind="showError">Ups something went wrong :'( Please try again!</p>   
         <div class="locations" show.bind="markers.length > 0">
           <h4>Selected locations:</h4>
           <table class="table">
@@ -63,6 +64,7 @@
           <button class="btn btn-success btn-lg ${markers.length > 2 ? '' : 'disabled'}"
                   click.delegate="sendStartCommand()" show.bind="markers.length > 0">Run</button>
         </div>
+        <!--<span>Room: ${room}</span>-->
         <div class="output">
           <p repeat.for="response of responses">
             Genes: ${response.genes}  Fitness: ${response.fitness}  Time: ${response.time}

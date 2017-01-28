@@ -9,7 +9,7 @@ export class WordGuess {
     this.responses = [];
     this.sequence = '';
     this.room = '';
-    this.socket = io.connect('http://localhost:5000/word-guess');
+    this.socket = io.connect('/word-guess');
   }
 
   attached() {
