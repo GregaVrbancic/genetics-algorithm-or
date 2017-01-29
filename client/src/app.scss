@@ -475,8 +475,31 @@ csmall2 {
     margin-top: -4.5em;
   }
 }
+.gif-output {
+  margin: 2.9em 0em;
+  min-height: 22em;
+  padding: 1em;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px 4px 0 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+
+  &:before {
+    position: relative;
+    left: 15px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #959595;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    content: "Animation output:";
+    margin-top: -4.5em;
+  }
+}
 .dummy-map {
-  height: 350px;
+  margin: 2.9em 0em;
+  height: 22em;
   padding-top: 105px;
   background-color: #fff;
   border: 1px solid #ddd;

@@ -11,6 +11,7 @@ Flask==0.12
 Flask-SocketIO==2.8.2
 greenlet==0.4.11
 gunicorn==19.6.0
+imageio==2.1.1
 isort==4.2.5
 itsdangerous==0.24
 jedi==0.9.0
@@ -18,6 +19,7 @@ Jinja2==2.9.4
 lazy-object-proxy==1.2.2
 MarkupSafe==0.23
 mccabe==0.6.0
+numpy==1.12.0
 olefile==0.44
 packaging==16.8
 Pillow==4.0.0

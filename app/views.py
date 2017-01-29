@@ -6,6 +6,7 @@ from pyevolve import G1DList, GAllele, GSimpleGA, Crossovers, Consts
 from math import sqrt
 from PIL import Image, ImageDraw, ImageFont
 import datetime, random, string
+import imageio
 
 @app.route('/')
 @app.route('/index')
@@ -20,6 +21,10 @@ def send_js(path):
 @app.route('/imgs/<path:path>')
 def send_img(path):
     return send_from_directory('./gen_imgs', path)
+
+@app.route('/gif/<path:path>')
+def send_gif(path):
+    return send_from_directory('./gifs', path)
 
 @socketio.on('connect', namespace='/word-guess')
 def on_connect_word_guess():
@@ -96,11 +101,12 @@ class GuessWordThread(Thread):
 
 class TravellingSalesmanThread(Thread):
     def __init__(self, command):
-        self.coords = [(random.randint(0, 1240), random.randint(0, 1024)) for i in xrange(command['numLocations'])]
+        self.coords = [(random.randint(0, 1240), random.randint(0, 1024)) for i in xrange(int(command['numLocations']))]
         self.distance_matrix = []
-        self.num_locations = command['numLocations']
-        self.num_generations = command['numGenerations']
+        self.num_locations = int(command['numLocations'])
+        self.num_generations = int(command['numGenerations'])
         self.room = command['room']
+        self.images = []
         super(TravellingSalesmanThread, self).__init__()
     
     def solveTSP(self):
@@ -162,13 +168,13 @@ class TravellingSalesmanThread(Thread):
                 d.ellipse((x-5,y-5,x+5,y+5),outline=(0,0,0),fill=(196,196,196))
             del d
             img.save(img_file, "PNG")
+            self.images.append(imageio.imread(img_file))
 
             print "The plot was saved into the %s file." % (img_file,)
 
         def evolve_callback(ga_engine):
             if ga_engine.currentGeneration % 10 == 0:
                 write_to_img(self.coords, ga_engine.bestIndividual(), "./app/gen_imgs/%s_%d.png" % (self.room, ga_engine.currentGeneration,))
-                socketio.emit('server response', { 'imgUrl': "%s_%d.png" % (self.room, ga_engine.currentGeneration,)}, namespace='/travelling-salesman', room=self.room, broadcast=False)
 
         genome = G1DList.G1DList(len(self.coords))
         genome.evaluator.set(lambda chromosome: get_tour_length(self.distance_matrix, chromosome))
@@ -185,6 +191,10 @@ class TravellingSalesmanThread(Thread):
 
         ga.evolve(freq_stats=100)
         best = ga.bestIndividual()
+
+        kargs = { 'duration': 2 }
+        imageio.mimsave("./app/gifs/%s.gif"  % self.room, self.images, 'GIF', ** kargs)
+        socketio.emit('server response', { 'gifUrl': "%s.gif" % (self.room,)}, namespace='/travelling-salesman', room=self.room, broadcast=False)
 
     def run(self):
         self.solveTSP()

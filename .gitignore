@@ -132,3 +132,4 @@ Temporary Items
 # End of https://www.gitignore.io/api/visualstudiocode
 
 app/gen_imgs/*
+app/gifs/*
