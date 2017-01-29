@@ -7,7 +7,7 @@ export class TravellingSalesman {
     this.info = 'The higher number of locations you set, the more difficult it is for genetic algorithm to solve the problem and also more time consuming it is.';
     this.room = '';
     this.numLocations = 30;
-    this.numGenerations = 1500;
+    this.numGenerations = 300;
     this.responses = [];
     this.running = false;
     this.showBest = false;

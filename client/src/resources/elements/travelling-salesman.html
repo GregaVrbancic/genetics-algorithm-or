@@ -44,7 +44,7 @@
         </div>
         <div class="gif-output" show.bind="!running">
           <button class="btn btn-default pull-right" show.bind="response.gifUrl" click.trigger="clickShowBest()">Show best</button>
-          <img src.bind="'/imgs/' + room + '_' + numGenerations + '.png'" if.bind="response.gifUrl && showBest" />
+          <img src.bind="'/imgs/' + room + '_' + (numGenerations -10) + '.png'" if.bind="response.gifUrl && showBest" />
           <img src.bind="'/gif/' + response.gifUrl" if.bind="response.gifUrl && !showBest" />
         </div>
 		 	</div>
