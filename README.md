@@ -3,6 +3,7 @@
 
 ## Installation
 > You should have installed Python and npm on your system!
+
 1. clone repository: ```git clone git@github.com:GregaVrbancic/genetics-algorithm-or.git```
 2. navigate into cloned directory
 3. install requirements: ``` flask/bin/pip  install -r requirements.txt ```
