@@ -223,7 +223,8 @@ define('resources/elements/travelling-salesman',['exports', 'socket.io-client'],
         _this.socket.off('connected response');
       });
       this.socket.on('server response', function (response) {
-        return _this.responses.unshift(response);
+        console.log('response: ' + JSON.stringify(response));
+        _this.responses.unshift(response);
       });
     };
 

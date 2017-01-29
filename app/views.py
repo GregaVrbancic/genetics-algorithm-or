@@ -1,9 +1,10 @@
 from app import app, genetic, socketio
-from flask import render_template, send_from_directory
+from flask import render_template, send_from_directory, json
 from flask_socketio import emit, disconnect, join_room, leave_room
 from threading import Thread, Event
 from pyevolve import G1DList, GAllele, GSimpleGA, Crossovers, Consts
 from math import sqrt
+from PIL import Image, ImageDraw, ImageFont
 import datetime, random, string
 
 @app.route('/')
@@ -14,6 +15,11 @@ def index():
 @app.route('/scripts/<path:path>')
 def send_js(path):
     return send_from_directory('../client/scripts', path)
+
+
+@app.route('/imgs/<path:path>')
+def send_img(path):
+    return send_from_directory('./gen_imgs', path)
 
 @socketio.on('connect', namespace='/word-guess')
 def on_connect_word_guess():
@@ -127,8 +133,42 @@ class TravellingSalesmanThread(Thread):
 
             self.distance_matrix = get_distance_matrix(self.coords)
 
+        def write_to_img(coords, tour, img_file):
+            """ The function to plot the graph """
+            padding=20
+            coords=[(x+padding,y+padding) for (x,y) in coords]
+            maxx,maxy=0,0
+            for x,y in coords:
+                maxx=max(x,maxx)
+                maxy=max(y,maxy)
+            maxx+=padding
+            maxy+=padding
+            img=Image.new("RGB",(int(maxx),int(maxy)),color=(255,255,255))
+
+            font=ImageFont.load_default()
+            d=ImageDraw.Draw(img);
+            num_cities=len(tour)
+            for i in range(num_cities):
+                j=(i+1)%num_cities
+                city_i=tour[i]
+                city_j=tour[j]
+                x1,y1=coords[city_i]
+                x2,y2=coords[city_j]
+                d.line((int(x1),int(y1),int(x2),int(y2)),fill=(0,0,0))
+                d.text((int(x1)+7,int(y1)-5),str(i),font=font,fill=(32,32,32))
+
+            for x,y in coords:
+                x,y=int(x),int(y)
+                d.ellipse((x-5,y-5,x+5,y+5),outline=(0,0,0),fill=(196,196,196))
+            del d
+            img.save(img_file, "PNG")
+
+            print "The plot was saved into the %s file." % (img_file,)
+
         def evolve_callback(ga_engine):
-            print('ga engine: ' + str(ga_engine))
+            if ga_engine.currentGeneration % 10 == 0:
+                write_to_img(self.coords, ga_engine.bestIndividual(), "./app/gen_imgs/%s_%d.png" % (self.room, ga_engine.currentGeneration,))
+                socketio.emit('server response', { 'imgUrl': "%s_%d.png" % (self.room, ga_engine.currentGeneration,)}, namespace='/travelling-salesman', room=self.room, broadcast=False)
 
         genome = G1DList.G1DList(len(self.coords))
         genome.evaluator.set(lambda chromosome: get_tour_length(self.distance_matrix, chromosome))

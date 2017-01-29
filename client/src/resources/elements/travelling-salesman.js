@@ -18,7 +18,10 @@ export class TravellingSalesman {
       this.room === '' ? this.room = response.room : this.room = this.room;
       this.socket.off('connected response');
     });
-    this.socket.on('server response', response => this.responses.unshift(response));
+    this.socket.on('server response', response => {
+      console.log('response: ' + JSON.stringify(response));
+      this.responses.unshift(response)
+    });
   }
 
   detached() {
